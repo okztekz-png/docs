@@ -1,0 +1,44 @@
+---
+title: "Monitoramento"
+description: "Monitoramento de equipamentos, servidores e serviços da Jodano."
+icon: "chart-line"
+---
+
+## Status atual
+
+Link da **Infortel** é monitrando com o UptimeKuma através de pings para ver picos de quedas ou disponibilidade.
+
+## Itens recomendados para monitoramento interno/local:
+
+| Item | Endereço | O que monitorar |
+| --- | --- | --- |
+| Roteador Intelbras/Infortel | `192.168.1.1` | Ping, disponibilidade e internet |
+| Proxmox | `192.168.1.193` | Ping, acesso web e recursos do host |
+| Servidor principal | `192.168.1.253` | Ping, serviços e disponibilidade |
+| Winflector | `192.168.1.253` | Serviço/processo e acesso externo |
+
+## Serviços críticos
+
+### Acesso externo ao SIAF
+
+O acesso externo ao SIAF depende de:
+
+- link de internet ativo;
+- roteador funcionando;
+- encaminhamento de portas preservado;
+- servidor `192.168.1.253` online;
+- Winflector em execução.
+
+## Checks a fazer
+
+- Verificação do serviço Winflector e porta externa SIAF (não monitoramos a porta)
+- Monitoramento de espaço em disco do servidor principal (Feito pelo RMM)
+- Monitoramento de uso de CPU/RAM no Proxmox (Não configurado no RMM)
+
+## Ferramenta sugerida
+
+Caso a Tekz inclua esse ambiente no monitoramento interno, registrar aqui:
+
+| Ferramenta | Status | Observação |
+| --- | --- | --- |
+| Uptime Kuma | Configurado | Monitorar disponibilidade básica do link |

@@ -1,0 +1,59 @@
+---
+title: "Backups"
+description: "Informações de backup da infraestrutura e sistemas da Jodano."
+icon: "cloud"
+---
+
+## Status atual
+
+Até o momento, não há política de backup detalhada documentada para a infraestrutura da **Jodano**.
+
+## Itens que precisam ser avaliados
+
+| Item | Status |
+| --- | --- |
+| Backup da VM principal `192.168.1.253` | Não é feito |
+| Backup do sistema SIAF | Faz do Banco de Dados com o Lokz |
+| Backup de banco de dados SIAF | Faz do Banco de Dados com o Lokz |
+| Backup de arquivos locais | Faz das nf emitidas apenas |
+| Backup do Proxmox | Não há |
+| Destino dos backups | Numve, com Lokz Cloud Backup |
+| Retenção | 30 dias |
+| Teste de restauração | Não é feito |
+
+## Servidor principal
+
+O servidor principal conhecido é:
+
+| Item | Informação |
+| --- | --- |
+| IP | `192.168.1.253` |
+| Ambiente | VM dentro do Proxmox |
+| Função | Servidor principal da operação |
+| Serviços conhecidos | Winflector / acesso ao SIAF |
+
+## Riscos observados
+
+<Warning>
+  Não há backup restauração do ambiente Proxmox. Essa informação deve ser levantada com prioridade.
+</Warning>
+
+Possíveis riscos:
+
+- falha da VM principal;
+- perda de dados do sistema SIAF;
+- indisponibilidade do Proxmox;
+- ausência de cópia externa;
+- ausência de teste de restauração.
+
+## Modelo de Backup Contratado
+
+```text
+Origem: Servidor 192.168.1.253
+Destino: Nuvem na Lokz Cloud Backup
+Frequência: Diariamente às 19h
+Retenção: 30 dias
+Responsável: Automático / Tekz
+Último teste de restauração: Não tem contratado
+Observações:
+```

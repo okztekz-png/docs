@@ -1,0 +1,122 @@
+---
+title: "Firewall / OPNsense"
+description: "Informações do firewall OPNsense, WANs, failover, interfaces, VLANs e DHCP."
+icon: "shield"
+---
+
+## Equipamento
+
+| Item | Informação |
+| --- | --- |
+| Tipo | OPNsense virtualizado |
+| Ambiente | Appliance VMware dedicado |
+| Usuário de acesso | `root` |
+| Função | Firewall, gateway, DHCP, failover e roteamento entre VLANs |
+
+<Warning>
+  A senha do OPNsense e as credenciais PPPoE devem ser consultadas no Passbolt. Não registrar senhas em texto aberto nesta documentação.
+</Warning>
+
+## Função no ambiente
+
+O firewall OPNsense é o ponto central da infraestrutura de rede da **Colônia Agrícola**.
+
+Ele é responsável por:
+
+- receber os links de internet;
+- realizar failover entre as WANs;
+- rotear o tráfego entre as VLANs internas;
+- atuar como gateway das redes internas;
+- prover DHCP para as VLANs configuradas.
+
+## Interfaces físicas
+
+O appliance possui 4 interfaces de rede documentadas:
+
+| Interface | Função |
+| --- | --- |
+| `eth0` | WAN 1 |
+| `eth1` | WAN 2 |
+| `eth3` | Não configurada |
+| `eth4` | LAN |
+
+## WANs
+
+### WAN 1 — Infortel
+
+| Item | Informação |
+| --- | --- |
+| Interface | `eth0` |
+| Tipo | PPPoE |
+| Provedor | Infortel |
+| IP fixo informado | `186.226.172.68` |
+
+### WAN 2 — Starlink
+
+| Item | Informação |
+| --- | --- |
+| Interface | `eth1` |
+| Tipo | DHCP |
+| Provedor | Starlink |
+| Função | Link secundário / failover |
+
+## Failover
+
+O firewall está configurado para trabalhar com failover entre os dois links de internet.
+
+| Link | Papel |
+| --- | --- |
+| WAN 1 / Infortel | Link principal |
+| WAN 2 / Starlink | Link secundário / contingência |
+
+## LAN
+
+| Item | Informação |
+| --- | --- |
+| Interface LAN | `eth4` |
+| IP principal do firewall | `192.168.2.1` |
+| Ligação física | `eth4` → porta 16 do switch TP-Link SG2218 |
+
+## VLANs internas
+
+O firewall realiza o roteamento entre as VLANs internas.
+
+### VLAN 1
+
+| Item | Informação |
+| --- | --- |
+| Finalidade | Segurança / Monitoramento / Rede existente |
+| Rede | `192.168.2.0/24` |
+| Gateway | Firewall |
+| DHCP | Ativo |
+| Faixa DHCP | `192.168.2.100` até `192.168.2.200` |
+| Observação | Mantém os ranges e IPs atuais das câmeras e equipamentos de segurança |
+
+### VLAN 10
+
+| Item | Informação |
+| --- | --- |
+| Finalidade | Visitantes / Wi-Fi |
+| Rede | `192.168.10.0/24` |
+| Gateway | Firewall |
+| DHCP | Ativo |
+| Faixa DHCP | `192.168.10.100` até `192.168.10.200` |
+| Observação | Utilizada apenas para Wi-Fi de visitantes |
+
+### VLAN 100
+
+| Item | Informação |
+| --- | --- |
+| Finalidade | Rede local cabeada / servidores internos |
+| Rede | `192.168.100.0/24` |
+| Gateway | Firewall |
+| DHCP | Ativo |
+| Faixa DHCP | `192.168.100.100` até `192.168.100.200` |
+| Observação | Utilizada para PCs, impressoras e servidores internos |
+
+## Observações importantes
+
+- O IP `192.168.2.1` representa o endereço principal atualmente utilizado para administração da rede existente.
+- A VLAN 100 será a base da rede local interna e dos servidores após a migração.
+- As credenciais de PPPoE e outras informações sensíveis não devem ser armazenadas em texto aberto.
+- Alterações no firewall podem impactar internet, VLANs, DHCP, Wi-Fi, servidores e segurança.

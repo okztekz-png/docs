@@ -1,0 +1,85 @@
+---
+title: "Backups"
+description: "Informações de backup da infraestrutura e sistemas da Colônia Agrícola."
+icon: "cloud"
+---
+
+## Status atual
+
+A política de backup detalhada aqui não está completa; Pendente adicionar mais informações da infraestrutura da **Colônia Agrícola**.
+
+## Itens que precisam ser avaliados
+
+| Item | Status |
+| --- | --- |
+| Backup do VMware Host principal | A confirmar |
+| Backup do UCS | A confirmar |
+| Backup do Nextcloud | É feito dos arquivos com o Lokz Cloud Backup |
+| Backup da VM UniFi Controller | A confirmar |
+| Backup da VM Windows | A confirmar |
+| Backup da configuração do OPNsense | A confirmar |
+| Backup da configuração do switch TP-Link | A confirmar |
+| Backup da configuração UniFi | A confirmar |
+| Destino dos backups | A confirmar |
+| Retenção | A confirmar |
+| Teste de restauração | A confirmar |
+
+## Servidores e serviços críticos
+
+| Serviço | IP | Importância |
+| --- | --- | --- |
+| VMware Host | `192.168.100.253` | Hospeda as VMs internas |
+| UCS | `192.168.100.254` | Arquivos e Nextcloud |
+| UniFi Controller | `192.168.100.194` | Controlador UniFi |
+| VM Windows | `192.168.2.142` / `192.168.100.142` | Função a confirmar |
+| OPNsense | `192.168.2.1` | Firewall, DHCP, VLANs e failover |
+
+## Riscos observados
+
+<Warning>
+  Ainda não há documentação suficiente sobre backup e restauração do ambiente. Essa informação deve ser levantada com prioridade.
+</Warning>
+
+Possíveis riscos:
+
+- falha do VMware Host principal;
+- perda de dados do UCS;
+- perda de arquivos do Nextcloud;
+- perda da configuração do OPNsense;
+- perda da configuração do UniFi Controller;
+- indisponibilidade da rede após falha de firewall;
+- ausência de cópia externa;
+- ausência de teste de restauração.
+
+## Prioridades de backup
+
+1. Configuração do OPNsense.
+2. UCS / arquivos / Nextcloud.
+3. UniFi Controller.
+4. VM Windows.
+5. Configuração do switch TP-Link.
+6. Documentação de restauração do ambiente VMware.
+
+## Modelo recomendado de documentação
+
+```text
+Origem:
+Destino:
+Frequência:
+Retenção:
+Responsável:
+Último teste de restauração:
+Observações:
+```
+
+## Pontos a confirmar
+
+- Existe backup atualmente?
+- O backup é feito pelo VMware, pelo sistema operacional ou por ferramenta externa?
+- Existe backup externo?
+- Existe retenção diária, semanal ou mensal?
+- Onde ficam armazenados os backups?
+- Quem verifica os backups?
+- Já foi feito teste de restauração?
+- Existe exportação periódica da configuração do OPNsense?
+- Existe exportação da configuração UniFi?

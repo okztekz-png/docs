@@ -1,0 +1,48 @@
+---
+title: "VPN"
+description: "Informações de VPN da infraestrutura da Colônia Agrícola."
+icon: "lock"
+---
+
+## Status atual
+
+A **Colônia Agrícola** tem uma VPN configurada no firewall para que sejam feitas conexões  externas para acesso de arquivos do servidor local 192.168.2.253.
+
+## Equipamento
+
+A VPN é um servidor gerenciado pelo firewall **OPNsense**.
+
+| Item | Informação |
+| --- | --- |
+| Firewall | OPNsense |
+| IP interno principal | `192.168.2.1` |
+| Ambiente | Appliance VMware dedicado |
+| Função | VPN, firewall e roteamento |
+
+## Pontos importantes
+
+- Existe VPN ativa no OPNsense.
+- Existe VPN para suporte técnico da Tekz.
+- Existe VPN para acesso remoto de usuários.
+- Há VPN para acessar UCS, Nextcloud, VMware ou UniFi Controller.
+- Não há regras de firewall que bloqueie os acessos as vlans pela VPN.
+- Existe autenticação por usuário individual.
+
+## Modelo da VPN no firewall
+
+```text
+Tipo de VPN: OpenVPN
+Porta: 1194
+Protocolo: UDP
+Usuários autorizados: Há vários criados localmente. Verificar no Opnsense.
+Rede de origem: WAN Infortel / Starlink não funciona porque é CGNAT
+Redes acessíveis: LAN e VLANS
+Autenticação: Usuario + Certificado
+Observações:
+```
+
+## Observações
+
+<Note>
+  Ainda há mais informações a serem acrescentadas aqui, mas a princípio esse resumo é suficiente para análise e entedimento rápído.
+</Note>

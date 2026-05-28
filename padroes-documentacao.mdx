@@ -1,0 +1,154 @@
+---
+title: "Padrões de Documentação"
+description: "Modelo padrão usado pela Tekz para documentar clientes, servidores, redes, acessos e procedimentos."
+icon: "list-check"
+---
+
+## Objetivo
+
+Esta página define o padrão mínimo para documentar ambientes técnicos mantidos pela **Tekz Tecnologias**.
+
+O objetivo é garantir que qualquer técnico consiga entender rapidamente:
+
+\* quem é o cliente; \* como a rede está organizada; \* quais equipamentos existem; \* quais sistemas são críticos; \* onde ficam os acessos; \* quais procedimentos devem ser seguidos; \* o que fazer em caso de incidente.
+
+## Padrão para clientes
+
+Cada cliente deve possuir, sempre que possível, as seguintes páginas:
+
+<CardGroup cols={2}>
+  <Card title="Visão geral" icon="building">
+    Resumo do cliente, localização, responsáveis, tipo de ambiente e observações principais.
+  </Card>
+
+  <Card title="Topologia" icon="network-wired">
+    Desenho ou descrição da rede física e lógica.
+  </Card>
+
+  <Card title="Rede" icon="ethernet">
+    Faixas de IP, DHCP, VLANs, gateways, switches, Wi-Fi e equipamentos de rede.
+  </Card>
+
+  <Card title="Firewall" icon="shield">
+    Regras principais, NAT, redirecionamentos, portas liberadas e observações de segurança.
+  </Card>
+
+  <Card title="VPN" icon="lock">
+    Tipo de VPN, usuários, finalidade, rotas e procedimentos de acesso.
+  </Card>
+
+  <Card title="Servidores" icon="server">
+    Servidores físicos, virtuais, serviços instalados, IPs, sistema operacional e função.
+  </Card>
+
+  <Card title="Sistemas" icon="window">
+    Sistemas utilizados pelo cliente, onde rodam, dependências e formas de acesso.
+  </Card>
+
+  <Card title="DNS e domínios" icon="globe">
+    Domínios, registros DNS, hospedagem, Cloudflare e observações.
+  </Card>
+
+  <Card title="Links de internet" icon="wifi">
+    Provedores, velocidades, equipamentos, IPs públicos e observações.
+  </Card>
+
+  <Card title="Backups" icon="database-backup">
+    O que é copiado, frequência, destino, retenção e processo de restauração.
+  </Card>
+
+  <Card title="Monitoramento" icon="chart-line">
+    Serviços monitorados, ferramentas usadas, alertas e indicadores importantes.
+  </Card>
+
+  <Card title="Procedimentos" icon="book">
+    Rotinas específicas daquele cliente.
+  </Card>
+
+  <Card title="Incidentes" icon="triangle-alert">
+    Histórico de problemas relevantes e soluções aplicadas.
+  </Card>
+</CardGroup>
+
+## Regras de segurança
+
+<Warning>
+  Nunca registre senhas, tokens, chaves privadas, seeds, códigos de recuperação ou credenciais diretamente na documentação.
+</Warning>
+
+Use a documentação apenas para indicar onde a credencial está armazenada.
+
+Exemplo recomendado:
+
+```txt
+Acesso ao firewall:
+Credencial armazenada no Bitwarden em:
+Cliente / Jodano / Firewall Principal
+```
+
+Exemplo que deve ser evitado:
+
+```txt
+Usuário: admin
+Senha: senha123
+```
+
+## Padrão de escrita
+
+Sempre que possível, escreva de forma objetiva:
+
+```txt
+Servidor principal do cliente.
+IP: 192.168.1.253
+Função: hospeda o sistema SIAF via Winflector.
+Localização: VM dentro do Proxmox.
+```
+
+Evite textos vagos como:
+
+```txt
+Servidor que fica lá no cliente e roda o sistema.
+```
+
+## Campos recomendados para equipamentos
+
+Para roteadores, firewalls, switches, servidores e access points, use o seguinte padrão:
+
+```txt
+Nome:
+Tipo:
+Fabricante/modelo:
+IP:
+Localização física:
+Função:
+Acesso:
+Observações:
+```
+
+## Campos recomendados para servidores
+
+```txt
+Nome:
+Tipo: físico ou virtual
+Host:
+Sistema operacional:
+IP:
+Função:
+Serviços instalados:
+Backup:
+Monitoramento:
+Observações:
+```
+
+## Campos recomendados para incidentes
+
+```txt
+Data:
+Cliente:
+Problema:
+Impacto:
+Causa identificada:
+Solução aplicada:
+Técnico responsável:
+Observações futuras:
+```

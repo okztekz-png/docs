@@ -1,0 +1,90 @@
+---
+title: "Incidentes"
+description: "Histórico de incidentes, alterações e ocorrências relevantes da infraestrutura da Colônia Agrícola."
+icon: "triangle-exclamation"
+---
+
+## Histórico de incidentes
+
+Até o momento, não há incidentes técnicos registrados nesta documentação.
+
+## Histórico de alterações relevantes
+
+### Estrutura inicial documentada
+
+- Documentação inicial do ambiente criada no Docmost.
+- Definidos os blocos principais:
+  - Firewall / OPNsense;
+  - Switches e VLANs;
+  - Servidores e VMs;
+  - IPs e acessos;
+  - Procedimentos;
+  - Topologia da rede.
+
+### Segmentação em VLANs
+
+- VLAN 1 mantida para segurança/monitoramento.
+- VLAN 10 definida para visitantes.
+- VLAN 100 definida para rede local cabeada e servidores internos.
+
+## Modelo para registro de incidente
+
+Use o padrão abaixo sempre que houver um problema relevante no ambiente.
+
+```text
+Data:
+Cliente: Colônia Agrícola
+Problema:
+Impacto:
+Causa identificada:
+Solução aplicada:
+Técnico responsável:
+Observações futuras:
+```
+
+## Exemplos de incidentes que devem ser registrados
+
+- Queda da WAN 1 / Infortel.
+- Queda da WAN 2 / Starlink.
+- Failover não funcionando.
+- OPNsense indisponível.
+- DHCP parado em alguma VLAN.
+- Problema de roteamento entre VLANs.
+- Switch TP-Link inacessível.
+- Porta trunk do AP UniFi com problema.
+- AP UniFi offline.
+- SSID entregando IP de VLAN incorreta.
+- VMware Host indisponível.
+- UCS indisponível.
+- Nextcloud fora do ar.
+- UniFi Controller parado.
+- VM Windows inacessível.
+- Falha em backup ou restauração.
+
+## Registro rápido
+
+| Data | Problema | Impacto | Solução | Responsável |
+| --- | --- | --- | --- | --- |
+| A preencher | A preencher | A preencher | A preencher | A preencher |
+
+## Modelo para registro de alteração
+
+```text
+Data:
+Alteração:
+Equipamento/serviço afetado:
+Motivo:
+Risco:
+Executado por:
+Resultado:
+Observações:
+```
+
+## Observações
+
+- Todo incidente que afetar internet, VLANs, servidores, Wi-Fi, UCS, Nextcloud ou firewall deve ser registrado.
+- Sempre que uma solução for aplicada, documentar o que foi feito para facilitar atendimentos futuros.
+- Alterações relevantes também podem ser registradas nesta página enquanto não houver uma página exclusiva de histórico.
+
+```text
+```

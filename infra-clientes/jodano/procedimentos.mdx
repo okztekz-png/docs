@@ -1,0 +1,79 @@
+---
+title: "Procedimentos"
+description: "Procedimentos operacionais para validação e atendimento da infraestrutura da Jodano."
+icon: "book"
+---
+
+## Acesso ao roteador
+
+1. Verificar conectividade com `192.168.1.1`.
+2. Acessar o painel do roteador.
+3. Autenticar com credencial armazenada no Passbolt.
+4. Validar:
+   - status da internet;
+   - DHCP;
+   - regras de encaminhamento de porta;
+   - conectividade LAN.
+
+## Acesso ao Proxmox
+
+1. Abrir o acesso web do Proxmox:
+
+```text
+192.168.1.193:8006
+```
+
+2. Autenticar com conta administrativa.
+3. Verificar status do host.
+4. Confirmar se o servidor `192.168.1.253` está em execução.
+5. Verificar uso de CPU, memória e disco.
+6. Conferir se há alertas ou falhas no host.
+
+## Validação do servidor principal
+
+1. Confirmar resposta no IP:
+
+```text
+192.168.1.253
+```
+
+2. Validar os serviços internos necessários.
+3. Confirmar se o Winflector está em execução quando houver necessidade de acesso externo ao SIAF.
+4. Verificar se o servidor está acessível pela rede interna.
+5. Confirmar se não há problema de disco, travamento ou desligamento da VM.
+
+## Validação do acesso externo ao SIAF
+
+1. Confirmar se o servidor `192.168.1.253` está online.
+2. Validar se o Winflector está ativo.
+3. Conferir se as regras de encaminhamento de porta permanecem configuradas no roteador.
+4. Verificar se o link de internet está funcionando.
+5. Testar o acesso externo a partir do equipamento autorizado, quando necessário.
+
+## Checklist rápido em caso de indisponibilidade
+
+- A internet está ativa no roteador?
+- A ONU está ligada e sincronizada?
+- O roteador `192.168.1.1` responde?
+- O switch principal está energizado?
+- O Proxmox `192.168.1.193` está acessível?
+- O servidor `192.168.1.253` está online?
+- O Winflector está em execução?
+- As regras de encaminhamento continuam presentes?
+- Houve troca de roteador, ONU ou alteração do provedor?
+- O notebook do Sr. Jodano está tentando acessar pelo caminho correto?
+
+## Procedimento em caso de falha no acesso externo ao SIAF
+
+1. Validar internet no cliente.
+2. Validar se o IP público ou rota externa mudou.
+3. Validar se o roteador mantém os encaminhamentos.
+4. Validar se o servidor `192.168.1.253` responde internamente.
+5. Validar se o Winflector está ativo.
+6. Reiniciar o serviço do Winflector, se necessário.
+7. Testar novamente o acesso externo.
+8. Registrar o incidente na documentação.
+
+## Observações
+
+- Antes de alterar regras no roteador, registrar a configuração atual.

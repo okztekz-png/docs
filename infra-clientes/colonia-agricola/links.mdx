@@ -1,0 +1,81 @@
+---
+title: "Links de Internet"
+description: "Links de internet, WANs, provedores e failover da Colônia Agrícola."
+icon: "wifi"
+---
+
+## Visão geral
+
+A Colônia Agrícola possui dois links de internet configurados no firewall OPNsense.
+
+O firewall realiza failover entre as WANs.
+
+## Links documentados
+
+| Link | Provedor | Interface | Tipo | Observações |
+| --- | --- | --- | --- | --- |
+| WAN 1 | Infortel | `eth0` | PPPoE | IP fixo informado: `186.226.172.68` |
+| WAN 2 | Starlink | `eth1` | DHCP | Link secundário / failover |
+
+## Fluxo principal da rede
+
+```text
+Internet
+ ├─ Infortel (PPPoE) → OPNsense eth0
+ └─ Starlink (DHCP) → OPNsense eth1
+
+OPNsense
+ └─ eth4 (LAN) → Switch TP-Link SG2218 porta 16
+
+Switch TP-Link SG2218
+ ├─ Portas 1 a 12 → VLAN 100 (rede local)
+ ├─ Porta 13 → Switch legado / VLAN 1
+ ├─ Porta 15 → AP UniFi (VLANs 1, 10 e 100)
+ └─ Porta 16 → uplink vindo do firewall
+
+Servidor VMware principal
+ ├─ UCS
+ ├─ UniFi Controller
+ └─ VM Windows
+```
+
+## WAN 1 — Infortel
+
+| Item | Informação |
+| --- | --- |
+| Interface | `eth0` |
+| Tipo | PPPoE |
+| Provedor | Infortel |
+| IP fixo informado | `186.226.172.68` |
+| Função | Link principal |
+
+## WAN 2 — Starlink
+
+| Item | Informação |
+| --- | --- |
+| Interface | `eth1` |
+| Tipo | DHCP |
+| Provedor | Starlink |
+| Função | Link secundário / failover |
+
+## Failover
+
+O OPNsense está configurado para trabalhar com failover entre os dois links.
+
+| Situação | Comportamento esperado |
+| --- | --- |
+| WAN 1 funcionando | Tráfego usa link principal |
+| WAN 1 indisponível | Tráfego deve usar Starlink |
+| WAN 1 retorna | Tráfego volta conforme política configurada no OPNsense |
+
+## Pontos importantes
+
+- Credenciais PPPoE da Infortel no Passbolt.
+- Starlink está em bridge.
+- Há CGNAT na Starlink, não dá para encaminhar portas.
+
+## Observações
+
+- Alterações nas WANs podem impactar todo o ambiente.
+- Antes de modificar gateways ou grupos de failover, registrar a configuração atual.
+- As credenciais PPPoE não devem ser documentadas em texto aberto.

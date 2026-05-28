@@ -1,0 +1,81 @@
+---
+title: "Monitoramento"
+description: "Monitoramento de firewall, links, VLANs, servidores e serviços da Colônia Agrícola."
+icon: "chart-line"
+---
+
+## Status atual
+
+Fazemos monitoramentos das máquinas com softwsare RMM e também monitoramos o link da infortel e também da Stralink com um DDNS pré-configurado.
+
+## Itens de monitoramento
+
+| Item | Endereço | O que monitorar | Faz? |
+| --- | --- | --- | --- |
+| OPNsense | `192.168.2.1` | Ping, WANs, gateways, DHCP e VLANs | Sim, dos links apenas |
+| Switch TP-Link SG2218 | `192.168.100.2` | Ping e disponibilidade | Não |
+| VMware Host | `192.168.100.253` | Ping, host, CPU, RAM e datastore | Não |
+| UCS | `192.168.100.254` | Ping, disco, serviços e compartilhamentos | Sim, no domínio do serviço nextcloud |
+| UniFi Controller | `192.168.100.194` | Ping, SSH e serviço UniFi | Não |
+| VM Windows atual | `192.168.2.142` | Ping e disponibilidade | Não |
+| VM Windows prevista | `192.168.100.142` | Ping após migração | Não |
+| Link Infortel | WAN 1 | Disponibilidade e latência | Sim |
+| Link Starlink | WAN 2 | Disponibilidade e latência | Sim, com  DDNS |
+| AP UniFi | A preencher | Disponibilidade e status no controller | Não |
+
+## Serviços críticos
+
+### Firewall OPNsense
+
+O OPNsense é crítico porque concentra:
+
+- internet;
+- failover;
+- roteamento entre VLANs;
+- DHCP;
+- gateway das redes internas.
+
+### UCS / Nextcloud
+
+O UCS é crítico porque hospeda:
+
+- serviços de arquivos;
+- Nextcloud;
+- possíveis serviços internos relacionados.
+
+### UniFi Controller
+
+O UniFi Controller é importante para:
+
+- gerenciamento do AP;
+- SSIDs;
+- configurações de Wi-Fi;
+- VLANs aplicadas às redes sem fio.
+
+## Sugestão de checks
+
+- Ping no firewall `192.168.2.1`.
+- Ping no switch `192.168.100.2`.
+- Ping no VMware Host `192.168.100.253`.
+- Ping no UCS `192.168.100.254`.
+- Ping no UniFi Controller `192.168.100.194`.
+- Monitoramento de WAN 1 / Infortel.
+- Monitoramento de WAN 2 / Starlink.
+- Verificação do failover.
+- Monitoramento de espaço em disco do UCS.
+- Monitoramento de datastore do VMware Host.
+- Monitoramento dos APs UniFi no controller.
+
+## Ferramentas
+
+| Ferramenta | Status | Observação |
+| --- | --- | --- |
+| Uptime Kuma | Em uso | Monitorar disponibilidade básica |
+| Software RMM | Em uso | Monitorar equipamentos |
+| UniFi Controller | Em uso | Pode monitorar APs e clientes Wi-Fi |
+
+## Observações
+
+- Priorizar monitoramento do OPNsense, VMware Host e UCS.
+- Monitorar os dois links separadamente.
+- Registrar falhas recorrentes na página de incidentes.

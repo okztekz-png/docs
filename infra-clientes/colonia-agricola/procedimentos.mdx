@@ -1,0 +1,178 @@
+---
+title: "Procedimentos"
+description: "Procedimentos operacionais para validação e atendimento da infraestrutura da Colônia Agrícola."
+icon: "book"
+---
+
+## Procedimentos principais
+
+Esta página concentra procedimentos operacionais relacionados à infraestrutura da **Colônia Agrícola**.
+
+## Acesso ao firewall OPNsense
+
+1. Verificar conectividade com o firewall:
+
+```text
+192.168.2.1
+```
+
+2. Acessar o painel web do OPNsense.
+3. Autenticar com a credencial armazenada no Passbolt.
+4. Validar:
+   - status da WAN 1 / Infortel;
+   - status da WAN 2 / Starlink;
+   - gateways;
+   - grupo de failover;
+   - DHCP das VLANs;
+   - regras de firewall;
+   - interfaces VLAN.
+
+## Validação de WAN principal e WAN secundária
+
+1. Acessar o OPNsense.
+2. Verificar o status dos gateways.
+3. Confirmar se a WAN 1 / Infortel está online.
+4. Confirmar se a WAN 2 / Starlink está online.
+5. Validar se há perda de pacotes ou latência alta.
+6. Conferir se o failover está funcionando conforme esperado.
+
+## Validação de failover
+
+1. Confirmar status atual das duas WANs no OPNsense.
+2. Identificar qual WAN está ativa.
+3. Se necessário, simular queda controlada apenas em janela autorizada.
+4. Validar se o tráfego sai pela WAN secundária.
+5. Restaurar o link principal.
+6. Confirmar se o tráfego retorna para a política configurada.
+7. Registrar qualquer comportamento anormal.
+
+<Warning>
+  Não realizar testes de failover em horário de produção sem autorização, pois pode causar instabilidade temporária.
+</Warning>
+
+## Acesso ao switch gerenciável
+
+1. Verificar conectividade com:
+
+```text
+192.168.100.2
+```
+
+2. Acessar o painel do switch TP-Link SG2218.
+3. Validar:
+   - status das portas;
+   - VLANs configuradas;
+   - porta 13 para switch legado;
+   - porta 15 para AP UniFi;
+   - porta 16 como uplink do firewall;
+   - portas 1 a 12 para rede local.
+
+## Conferência de VLANs
+
+Validar as VLANs principais:
+
+| VLAN | Finalidade | Rede |
+| --- | --- | --- |
+| VLAN 1 | Segurança / Monitoramento | `192.168.2.0/24` |
+| VLAN 10 | Visitantes / Wi-Fi | `192.168.10.0/24` |
+| VLAN 100 | Rede local / Servidores | `192.168.100.0/24` |
+
+Conferir especialmente:
+
+- se a porta 16 recebe a LAN do firewall;
+- se a porta 15 está como trunk para o AP UniFi;
+- se a porta 13 mantém a rede de segurança;
+- se as portas 1 a 12 estão na VLAN 100.
+
+## Acesso ao VMware principal
+
+1. Verificar conectividade com:
+
+```text
+192.168.100.253
+```
+
+2. Acessar o host VMware.
+3. Autenticar com credencial armazenada no Passbolt.
+4. Verificar:
+   - status do host;
+   - uso de CPU;
+   - uso de memória;
+   - datastores;
+   - status das VMs;
+   - snapshots antigos;
+   - conectividade das VMs.
+
+## Validação do UCS
+
+1. Verificar conectividade com:
+
+```text
+192.168.100.254
+```
+
+2. Validar serviços principais:
+   - arquivos;
+   - Nextcloud;
+   - autenticação, se aplicável;
+   - espaço em disco;
+   - conectividade de rede.
+
+## Validação do UniFi Controller
+
+1. Verificar conectividade com:
+
+```text
+192.168.100.194
+```
+
+2. Testar SSH, se necessário:
+
+```text
+ssh unify@192.168.100.194
+```
+
+3. Validar:
+   - serviço UniFi;
+   - AP conectado;
+   - SSIDs;
+   - VLANs dos SSIDs;
+   - clientes conectados;
+   - alertas do controller.
+
+## Conferência do AP UniFi e SSIDs
+
+1. Confirmar que o AP está conectado à porta 15 do switch.
+2. Validar se a porta 15 transporta VLAN 1, VLAN 10 e VLAN 100.
+3. No UniFi Controller, validar os SSIDs:
+   - Visitantes → VLAN 10;
+   - Colônia Agrícola → VLAN 100.
+4. Testar conexão de cliente em cada SSID.
+5. Confirmar se o cliente recebeu IP da VLAN correta.
+
+## Checklist rápido em caso de indisponibilidade
+
+- O OPNsense está acessível em `192.168.2.1`?
+- A WAN 1 / Infortel está online?
+- A WAN 2 / Starlink está online?
+- O failover está ativo?
+- O switch TP-Link `192.168.100.2` está acessível?
+- A porta 16 está ativa?
+- O VMware Host `192.168.100.253` está online?
+- O UCS `192.168.100.254` está online?
+- O UniFi Controller `192.168.100.194` está online?
+- O AP UniFi está online no controller?
+- O cliente está na VLAN correta?
+- O DHCP da VLAN correspondente está ativo?
+
+## Procedimentos a documentar futuramente
+
+- Troca de senha administrativa.
+- Inclusão de novo equipamento na VLAN 100.
+- Inclusão de novo SSID no UniFi.
+- Manutenção do UCS.
+- Manutenção do Nextcloud.
+- Reboot controlado do VMware Host.
+- Validação pós-queda de internet.
+- Exportação de backup do OPNsense.
+- Exportação de backup do UniFi Controller.

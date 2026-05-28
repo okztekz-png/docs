@@ -1,0 +1,56 @@
+---
+title: "Sistemas"
+description: "Sistemas utilizados pela Jodano e suas dependências."
+icon: "window"
+---
+
+## Sistemas conhecidos
+
+### SIAF
+
+O sistema **SIAF** é um sistema utilizado na operação da Jodano.
+
+Até o momento, está documentado que o acesso externo ao SIAF é feito através do **Winflector**, que roda no servidor `192.168.1.253`.
+
+| Item | Informação |
+| --- | --- |
+| Sistema | SIAF |
+| Acesso externo | Via Winflector |
+| Servidor relacionado | `192.168.1.253` |
+| Usuário externo conhecido | Notebook do Sr. Jodano |
+| Dependência de rede | Encaminhamento de portas no roteador |
+
+## Winflector
+
+O **Winflector** é responsável por viabilizar o acesso remoto externo ao sistema SIAF.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | Winflector |
+| Servidor | `192.168.1.253` |
+| Finalidade | Acesso externo ao SIAF |
+| Dependência | Regras de encaminhamento de porta no roteador |
+
+## Dependências conhecidas
+
+- Servidor `192.168.1.253` online.
+- Winflector em execução.
+- Link de internet ativo.
+- Regras de encaminhamento de porta ativas no roteador.
+- Equipamento autorizado do Sr. Jodano funcionando corretamente.
+
+## Pontos a confirmar
+
+- Caminho de instalação do SIAF.
+- Banco de dados utilizado pelo SIAF.
+- Se o SIAF roda localmente no servidor ou apenas é acessado por ele.
+- Usuários internos que utilizam o sistema.
+- Procedimento de backup do sistema.
+- Procedimento de restauração.
+- Portas utilizadas pelo Winflector.
+
+## Observações
+
+<Note>
+  Esta página deve ser atualizada quando forem confirmados os detalhes internos do SIAF e do Winflector.
+</Note>

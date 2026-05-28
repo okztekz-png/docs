@@ -1,0 +1,69 @@
+---
+title: "Sistemas"
+description: "Sistemas e serviços utilizados na infraestrutura da Colônia Agrícola."
+icon: "window"
+---
+
+## Visão geral
+
+Os sistemas e serviços conhecidos da **Colônia Agrícola** estão hospedados principalmente no ambiente VMware principal.
+
+## Serviços conhecidos
+
+### UCS / Univention Server
+
+| Item | Informação |
+| --- | --- |
+| IP | `192.168.100.254` |
+| Função principal | Servidor de arquivos |
+| Serviços relacionados | Arquivos e Nextcloud |
+| Ambiente | VM no VMware principal |
+
+### Nextcloud
+
+| Item | Informação |
+| --- | --- |
+| Onde roda | UCS |
+| Servidor relacionado | `192.168.100.254` |
+| Função | A confirmar |
+| Observação | Documentar URL, usuários, backup e dependências |
+
+### UniFi Controller
+
+| Item | Informação |
+| --- | --- |
+| IP | `192.168.100.194` |
+| Sistema operacional | Ubuntu |
+| Função | Controlador UniFi |
+| Conta da plataforma | `unifi@tekz.com.br` |
+| Acesso SSH | `ssh unify@192.168.100.194` |
+
+### VM Windows
+
+| Item | Informação |
+| --- | --- |
+| IP atual | `192.168.2.142` |
+| IP previsto | `192.168.100.142` |
+| Sistema operacional | Windows |
+| Função | Gerenciar regras de AD do UCS |
+| Observação | Máquina em processo de migração para a VLAN 100 |
+
+## Dependências conhecidas
+
+- O UniFi Controller depende da VM Ubuntu `192.168.100.194`.
+- O Nextcloud depende do UCS `192.168.100.254`.
+- O UCS depende do VMware Host `192.168.100.253`.
+- A rede interna depende da VLAN 100.
+- O acesso entre redes depende do OPNsense.
+- O Wi-Fi depende do AP UniFi e da porta 15 do switch TP-Link.
+
+## Pontos importantes
+
+- URL de acesso ao Nextcloud -\> [drive.coloniaagricola.com](http://drive.coloniaagricola.com)
+- Política de backup do Nextcloud -\> Lokz roda diretamente nos arquivos, fazendo backups 2x ao dia.
+
+## Observações
+
+<Note>
+  Esta página deve ser atualizada conforme forem confirmados os serviços internos, URLs, dependências e políticas de backup.
+</Note>

@@ -1,0 +1,169 @@
+---
+title: "Segurança"
+description: "Regras de segurança, confidencialidade e boas práticas para uso da documentação interna da Tekz."
+icon: "shield"
+---
+
+## Confidencialidade
+
+Esta documentação é de uso interno da **Tekz Tecnologias** e pode conter informações sensíveis sobre clientes, infraestrutura, servidores, acessos, redes e sistemas.
+
+<Warning>
+  Não compartilhe esta documentação, prints, links internos ou trechos sensíveis fora dos canais autorizados da Tekz.
+</Warning>
+
+## O que não deve ser documentado
+
+Nunca registre diretamente nesta documentação:
+
+- senhas;
+- tokens;
+- chaves de API;
+- chaves SSH privadas;
+- seeds;
+- códigos de recuperação;
+- credenciais de banco de dados;
+- credenciais de firewall;
+- credenciais de roteadores;
+- credenciais de servidores;
+- dados pessoais sensíveis desnecessários;
+- informações financeiras sigilosas de clientes.
+
+## Como referenciar credenciais
+
+As credenciais devem ser armazenadas exclusivamente no cofre autorizado da Tekz, como o **Bitwarden**.
+
+Na documentação, registre apenas o caminho de referência.
+
+Exemplo correto:
+
+````text
+Credencial no Bitwarden:
+Clientes / Jodano / Roteador
+
+Exemplo incorreto:
+
+Usuário: admin
+Senha: senha123
+Acessos administrativos
+
+Acessos administrativos devem ser usados apenas quando necessário para suporte, manutenção ou operação autorizada.
+
+Antes de acessar equipamentos críticos, confirme:
+
+cliente correto;
+equipamento correto;
+impacto da alteração;
+existência de backup;
+risco de indisponibilidade;
+necessidade de janela de manutenção;
+se há procedimento documentado.
+Alterações em ambientes de clientes
+<Warning> Alterações em firewall, DNS, VPN, roteadores, servidores e backups podem causar indisponibilidade. Revise a documentação antes de modificar qualquer item crítico. </Warning>
+
+Sempre que possível:
+
+registre a configuração atual antes de alterar;
+tire print de regras importantes;
+exporte backup de configuração quando disponível;
+valide acesso remoto antes e depois;
+tenha uma forma alternativa de acesso;
+registre a alteração realizada.
+Regras para firewall, roteadores e VPN
+
+Ao documentar ou alterar regras de firewall, roteador ou VPN:
+
+descreva a finalidade da regra;
+informe o serviço relacionado;
+registre IP interno e porta, quando aplicável;
+evite liberar portas sem necessidade;
+remova regras antigas ou desconhecidas apenas após validação;
+não exponha serviços críticos diretamente sem necessidade;
+registre qualquer dependência externa.
+
+Modelo recomendado:
+
+Serviço:
+IP interno:
+Porta externa:
+Porta interna:
+Finalidade:
+Solicitante:
+Data da alteração:
+Observações:
+Proteção de dados dos clientes
+
+As informações dos clientes devem ser tratadas com cuidado.
+
+Evite registrar dados que não sejam necessários para operação técnica.
+
+Exemplos de informações permitidas quando úteis:
+
+IPs internos;
+nomes de equipamentos;
+localização física de equipamentos;
+serviços instalados;
+topologia de rede;
+dependências técnicas;
+responsáveis técnicos;
+procedimentos operacionais.
+
+Exemplos de informações que devem ser evitadas:
+
+documentos pessoais;
+dados financeiros sensíveis;
+senhas;
+tokens;
+dados privados sem relação com suporte;
+informações pessoais de funcionários sem necessidade.
+Compartilhamento de informações
+
+Não envie informações técnicas sensíveis por canais inseguros.
+
+Evite compartilhar por:
+
+grupos abertos;
+prints em conversas não autorizadas;
+e-mails sem necessidade;
+links públicos;
+arquivos sem controle de acesso.
+
+Quando for necessário compartilhar alguma informação, envie apenas o mínimo necessário.
+
+Incidentes de segurança
+
+Caso perceba vazamento, exposição indevida ou acesso não autorizado:
+
+Informe imediatamente o responsável interno.
+Registre o ocorrido.
+Revogue ou altere credenciais afetadas.
+Verifique logs, quando possível.
+Atualize a documentação se houver mudança no procedimento.
+Registre o incidente na área correspondente.
+Boas práticas gerais
+Use autenticação em dois fatores sempre que disponível.
+Não reutilize senhas entre clientes.
+Não salve senhas em arquivos locais.
+Não envie credenciais em texto puro.
+Revise acessos antigos periodicamente.
+Remova acessos que não são mais utilizados.
+Mantenha sistemas e equipamentos atualizados.
+Documente mudanças críticas.
+Use Bitwarden para armazenamento de credenciais.
+Use VPN ou acesso seguro quando aplicável.
+Classificação das informações
+
+Use esta referência para saber o nível de cuidado necessário.
+
+Tipo de informação	Classificação	Onde registrar
+Topologia de rede	Interna	Mintlify
+IPs internos	Interna	Mintlify
+Procedimentos técnicos	Interna	Mintlify
+Usuários administrativos sem senha	Restrita	Mintlify, quando necessário
+Senhas	Confidencial	Bitwarden
+Tokens e chaves de API	Confidencial	Bitwarden
+Chaves SSH privadas	Confidencial	Bitwarden ou cofre seguro
+Dados pessoais sensíveis	Confidencial	Evitar registrar
+Regra principal
+<Note> A documentação deve ajudar a operar o ambiente, mas nunca deve se tornar um local de exposição de credenciais ou informações sensíveis. </Note> ```
+````

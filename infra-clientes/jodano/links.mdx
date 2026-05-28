@@ -1,0 +1,53 @@
+---
+title: "Links de Internet"
+description: "Links de internet, ONU, provedor e conectividade da Jodano."
+icon: "wifi"
+---
+
+## Link principal
+
+A internet da Jodano chega através da **ONU do provedor**, que entrega conectividade para o roteador Intelbras/Infortel.
+
+```text
+Internet / Provedor
+    ↓
+ONU
+    ↓
+Roteador Intelbras/Infortel
+    ↓
+Switch principal
+    ↓
+Rede interna da loja
+```
+
+## Informações conhecidas
+
+| Item | Informação |
+| --- | --- |
+| Provedor | Infortel |
+| Equipamento de entrada | ONU do provedor |
+| Roteador interno | Intelbras |
+| Gateway da rede | `192.168.1.1` |
+| IP público | 186.226.174.203 |
+| Tipo de IP público | FIXO |
+| Velocidade contratada | A preencher |
+
+## Dependências
+
+O link de internet impacta diretamente:
+
+- navegação dos equipamentos da loja;
+- acesso externo ao SIAF;
+- funcionamento do Winflector;
+- suporte remoto;
+- qualquer serviço externo dependente da internet.
+
+## Pontos a confirmar
+
+- Velocidade contratada.
+- Se os encaminhamentos de porta dependem de alguma configuração na ONU.
+
+## Observações
+
+- Caso o provedor troque a ONU ou altere o modo de operação, os encaminhamentos de porta podem ser impactados.
+- Em caso de falha no acesso externo ao SIAF, validar primeiro se o link está ativo e se o roteador está recebendo internet.

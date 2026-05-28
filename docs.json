@@ -1,0 +1,193 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Tekz Tecnologias",
+  "colors": {
+    "primary": "#F97316",
+    "light": "#FDBA74",
+    "dark": "#C2410C"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Início",
+        "icon": "house",
+        "pages": [
+          "index",
+          "como-usar",
+          "padroes-documentacao",
+          "seguranca"
+        ]
+      },
+      {
+        "group": "Infraestrutura de Clientes",
+        "icon": "users",
+        "pages": [
+          "infra-clientes/index",
+          {
+            "group": "Jodano",
+            "icon": "building",
+            "pages": [
+              "infra-clientes/jodano/index",
+              "infra-clientes/jodano/resumo",
+              "infra-clientes/jodano/topologia",
+              "infra-clientes/jodano/rede",
+              "infra-clientes/jodano/acessos",
+              "infra-clientes/jodano/firewall",
+              "infra-clientes/jodano/vpn",
+              "infra-clientes/jodano/servidores",
+              "infra-clientes/jodano/sistemas",
+              "infra-clientes/jodano/dns",
+              "infra-clientes/jodano/links",
+              "infra-clientes/jodano/backups",
+              "infra-clientes/jodano/monitoramento",
+              "infra-clientes/jodano/procedimentos",
+              "infra-clientes/jodano/incidentes"
+            ]
+          },
+          {
+            "group": "Colônia Agrícola",
+            "icon": "building",
+            "pages": [
+              "infra-clientes/colonia-agricola/index",
+              "infra-clientes/colonia-agricola/resumo",
+              "infra-clientes/colonia-agricola/topologia",
+              "infra-clientes/colonia-agricola/rede",
+              "infra-clientes/colonia-agricola/acessos",
+              "infra-clientes/colonia-agricola/firewall",
+              "infra-clientes/colonia-agricola/vpn",
+              "infra-clientes/colonia-agricola/servidores",
+              "infra-clientes/colonia-agricola/sistemas",
+              "infra-clientes/colonia-agricola/dns",
+              "infra-clientes/colonia-agricola/links",
+              "infra-clientes/colonia-agricola/backups",
+              "infra-clientes/colonia-agricola/monitoramento",
+              "infra-clientes/colonia-agricola/procedimentos",
+              "infra-clientes/colonia-agricola/incidentes"
+            ]
+          },
+          {
+            "group": "Intensivitia",
+            "icon": "building",
+            "pages": []
+          }
+        ]
+      },
+      {
+        "group": "Projetos",
+        "icon": "code",
+        "pages": [
+          "projetos/index",
+          {
+            "group": "Desenvolvimentos",
+            "icon": "laptop-code",
+            "pages": [
+              "projetos/desenvolvimentos/index",
+              {
+                "group": "HelpTekz",
+                "icon": "headset",
+                "pages": [
+                  "projetos/desenvolvimentos/helptekz/index",
+                  "projetos/desenvolvimentos/helptekz/arquitetura",
+                  "projetos/desenvolvimentos/helptekz/ambientes",
+                  "projetos/desenvolvimentos/helptekz/deploy",
+                  "projetos/desenvolvimentos/helptekz/banco-de-dados",
+                  "projetos/desenvolvimentos/helptekz/urls"
+                ]
+              },
+              {
+                "group": "Dojo365",
+                "icon": "graduation-cap",
+                "pages": [
+                  "projetos/desenvolvimentos/dojo365/index",
+                  "projetos/desenvolvimentos/dojo365/arquitetura",
+                  "projetos/desenvolvimentos/dojo365/ambientes",
+                  "projetos/desenvolvimentos/dojo365/deploy",
+                  "projetos/desenvolvimentos/dojo365/urls"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Site Tekz",
+            "icon": "globe",
+            "pages": [
+              "projetos/site-tekz/index",
+              "projetos/site-tekz/hospedagem",
+              "projetos/site-tekz/dns",
+              "projetos/site-tekz/deploy"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Hospedagem",
+        "icon": "cloud",
+        "pages": [
+          "hospedagem/index",
+          "hospedagem/servidores",
+          "hospedagem/proxmox",
+          "hospedagem/cloudflare",
+          "hospedagem/backups",
+          "hospedagem/monitoramento"
+        ]
+      },
+      {
+        "group": "Serviços Internos",
+        "icon": "toolbox",
+        "pages": [
+          "servicos-internos/index",
+          "servicos-internos/passbolt",
+          "servicos-internos/vpn",
+          "servicos-internos/zabbix",
+          "servicos-internos/grafana",
+          "servicos-internos/unifi",
+          "servicos-internos/dns",
+          "servicos-internos/email"
+        ]
+      },
+      {
+        "group": "Playbooks",
+        "icon": "book",
+        "pages": [
+          "playbooks/index",
+          "playbooks/novo-cliente",
+          "playbooks/troca-firewall",
+          "playbooks/queda-internet",
+          "playbooks/restaurar-backup",
+          "playbooks/onboarding-usuario"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/logo_tekz_light.svg",
+    "dark": "/images/Tekz-Branco-101x50-1.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Passbolt",
+      "href": "https://172.16.0.253:8443/"
+    }
+  },
+  "contextual": {
+    "options": [
+     "copy",
+     "view",
+     "chatgpt",
+    "claude"
+  ]
+  },
+  "footer": {
+    "socials": {
+    }
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "metadata": {
+    "timestamp": true
+  }
+}

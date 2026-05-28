@@ -1,0 +1,56 @@
+---
+title: "Visão Geral"
+description: "Documentação técnica da infraestrutura da Colônia Agrícola."
+icon: "building"
+sidebarTitle: "Visão geral"
+---
+
+<div style={{ textAlign: "center", marginBottom: "32px" }}>
+  <img src="https://tekz.com.br/wp-content/uploads/2023/01/cliente-28.png" alt="Logo Jodano" style={{ maxWidth: "240px" }} />
+</div>
+
+## Visão geral
+
+Esta seção reúne a documentação técnica da infraestrutura da **Colônia Agrícola**.
+
+O ambiente é composto por firewall OPNsense, switch gerenciável TP-Link, switch legado para equipamentos de segurança, AP UniFi e dois ambientes VMware.
+
+A infraestrutura foi segmentada em VLANs para separar segurança/monitoramento, rede local interna e rede de visitantes. O roteamento entre as VLANs é realizado pelo firewall OPNsense.
+
+<CardGroup cols={2}>
+  <Card title="Resumo" icon="file-text" href="/infra-clientes/colonia-agricola/resumo">
+    Visão geral do ambiente, equipamentos principais, VLANs e estrutura da rede.
+  </Card>
+
+  <Card title="Topologia" icon="network-wired" href="/infra-clientes/colonia-agricola/topologia">
+    Fluxo físico e lógico da rede, firewall, switches, VLANs, AP UniFi e virtualização.
+  </Card>
+
+  <Card title="Rede" icon="ethernet" href="/infra-clientes/colonia-agricola/rede">
+    Redes, VLANs, DHCP, gateways, portas do switch e segmentação.
+  </Card>
+
+  <Card title="Acessos" icon="key" href="/infra-clientes/colonia-agricola/acessos">
+    Referências de acesso aos equipamentos e serviços principais.
+  </Card>
+
+  <Card title="Firewall / OPNsense" icon="shield" href="/infra-clientes/colonia-agricola/firewall">
+    WANs, failover, interfaces, DHCP e roteamento entre VLANs.
+  </Card>
+
+  <Card title="Servidores" icon="server" href="/infra-clientes/colonia-agricola/servidores">
+    Ambientes VMware, UCS, UniFi Controller e VM Windows.
+  </Card>
+
+  <Card title="Sistemas" icon="window" href="/infra-clientes/colonia-agricola/sistemas">
+    Serviços internos, Nextcloud, UniFi Controller e sistemas relacionados.
+  </Card>
+
+  <Card title="Procedimentos" icon="book" href="/infra-clientes/colonia-agricola/procedimentos">
+    Rotinas de validação, failover, VLANs, servidores e conectividade.
+  </Card>
+</CardGroup>
+
+<Warning>
+  As credenciais e senhas não devem ser registradas em texto aberto nesta documentação. Consulte o Passbolt da Tekz quando necessário.
+</Warning>

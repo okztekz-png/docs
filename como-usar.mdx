@@ -1,0 +1,175 @@
+---
+title: "Como usar"
+description: "Orientações para navegar, consultar e manter a documentação interna da Tekz."
+icon: "circle-question"
+---
+
+## Objetivo
+
+Esta documentação foi criada para centralizar as informações técnicas e operacionais da **Tekz Tecnologias**.
+
+Ela deve ser usada pela equipe para consultar ambientes de clientes, projetos internos, hospedagem, serviços administrativos e procedimentos recorrentes.
+
+## Como a documentação está organizada
+
+A base está dividida em áreas principais:
+
+<CardGroup cols={2}>
+  <Card title="Infraestrutura de Clientes" icon="server" href="/infra-clientes">
+    Documentação por cliente: rede, firewall, servidores, acessos, VPN, backups, sistemas e incidentes.
+  </Card>
+
+  <Card title="Projetos" icon="code" href="/projetos">
+    Documentação de sistemas desenvolvidos ou mantidos pela Tekz.
+  </Card>
+
+  <Card title="Hospedagem" icon="cloud" href="/hospedagem">
+    Informações sobre servidores, Proxmox, DNS, Cloudflare, backups e monitoramento.
+  </Card>
+
+  <Card title="Serviços Internos" icon="toolbox" href="/servicos-internos">
+    Ferramentas usadas internamente, como Bitwarden, VPN, Zabbix, Grafana, UniFi, DNS e e-mail.
+  </Card>
+
+  <Card title="Playbooks" icon="book">
+    Procedimentos operacionais para situações recorrentes.
+  </Card>
+
+  <Card title="Padrões de Documentação" icon="list-check" href="/padroes-documentacao">
+    Modelo usado para manter todas as páginas organizadas e consistentes.
+  </Card>
+</CardGroup>
+
+## Como consultar informações de um cliente
+
+Para consultar um cliente, acesse:
+
+```text
+Infraestrutura de Clientes → Nome do Cliente
+
+| Página        | Finalidade                                  |
+| ------------- | ------------------------------------------- |
+| Resumo        | Visão geral do ambiente                     |
+| Topologia     | Como a rede está organizada                 |
+| Rede          | IPs, DHCP, VLANs, gateways e distribuição   |
+| Acessos       | Referências aos acessos administrativos     |
+| Firewall      | Regras, NAT, portas e roteador/firewall     |
+| VPN           | Informações de acesso remoto                |
+| Servidores    | Servidores físicos, virtuais e serviços     |
+| Sistemas      | Sistemas usados pelo cliente                |
+| DNS           | Domínios, registros e resolução de nomes    |
+| Links         | Provedores, ONU, IP público e conectividade |
+| Backups       | Rotina de backup, retenção e restauração    |
+| Monitoramento | Serviços monitorados e alertas              |
+| Procedimentos | Passos operacionais específicos             |
+| Incidentes    | Histórico de problemas e soluções           |
+
+Antes de alterar qualquer ambiente
+
+Antes de realizar alterações em cliente, servidor, firewall, DNS, VPN ou sistema crítico:
+
+<Warning> Consulte a documentação existente e confirme se há observações importantes, dependências ou histórico de incidentes. </Warning>
+
+Sempre verifique:
+
+qual equipamento será alterado;
+qual serviço depende dele;
+se há backup;
+se existe acesso alternativo;
+se há impacto para o cliente;
+se existe procedimento documentado;
+onde estão as credenciais no Bitwarden.
+Como registrar uma nova informação
+
+Ao adicionar uma nova informação, escreva de forma clara, objetiva e útil para outro técnico.
+
+Exemplo recomendado:
+
+Servidor principal
+IP: 192.168.1.253
+Função: hospeda o sistema SIAF via Winflector
+Localização: VM dentro do Proxmox
+
+
+Evite informações vagas:
+
+Servidor do cliente.
+Como registrar alterações
+
+Sempre que fizer uma alteração relevante, atualize a página correspondente.
+
+Exemplos de alterações que devem ser documentadas:
+
+troca de roteador;
+alteração de IP;
+nova regra de firewall;
+criação ou remoção de VPN;
+alteração de DNS;
+troca de provedor;
+criação de nova VM;
+mudança em backup;
+mudança em sistema crítico;
+incidente resolvido.
+Como registrar incidentes
+
+Use a página Incidentes do cliente sempre que houver uma ocorrência relevante.
+
+Modelo recomendado:
+
+Data:
+Cliente:
+Problema:
+Impacto:
+Causa identificada:
+Solução aplicada:
+Técnico responsável:
+Observações futuras:
+Como lidar com acessos e senhas
+<Warning> Nunca registre senhas, tokens, chaves privadas, seeds, códigos de recuperação ou credenciais diretamente na documentação. </Warning>
+
+A documentação deve informar apenas onde a credencial está armazenada.
+
+Exemplo correto:
+
+Credencial armazenada no Bitwarden:
+Clientes / Jodano / Proxmox
+
+Exemplo incorreto:
+
+Usuário: admin
+Senha: senha123
+Boas práticas de uso
+Consulte a documentação antes de iniciar um atendimento.
+Atualize a documentação após alterações importantes.
+Use nomes claros para equipamentos, servidores e sistemas.
+Não duplique informações sem necessidade.
+Não registre credenciais em texto aberto.
+Registre dúvidas como “A confirmar” em vez de inventar informação.
+Mantenha a documentação simples e direta.
+Prefira tabelas para IPs, servidores, acessos e inventários.
+Prefira checklists para procedimentos.
+Quando usar “A preencher” ou “A confirmar”
+
+Use A preencher quando a informação ainda não foi cadastrada.
+
+Use A confirmar quando existe uma suspeita ou informação parcial, mas ainda precisa ser validada.
+
+Exemplo:
+
+Provedor: A preencher
+IP público fixo: A confirmar
+Backup externo: A confirmar
+<Note> É melhor registrar que uma informação precisa ser confirmada do que documentar algo incorreto. </Note>
+Padrão de atualização
+
+Sempre que possível, mantenha as páginas atualizadas logo após o atendimento.
+
+O ideal é que a documentação responda rapidamente:
+
+onde fica;
+qual IP;
+para que serve;
+como acessa;
+do que depende;
+o que fazer se parar.
+```

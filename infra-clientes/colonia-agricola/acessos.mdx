@@ -1,0 +1,55 @@
+---
+title: "Acessos"
+description: "Referência de acessos administrativos da infraestrutura da Colônia Agrícola."
+icon: "key"
+---
+
+## Orientação de segurança
+
+<Warning>
+  Não registrar senhas, tokens ou credenciais sensíveis em texto aberto nesta página.
+</Warning>
+
+As credenciais devem ser armazenadas e consultadas no **Passbolt** da Tekz.
+
+## Equipamentos principais
+
+| Serviço / Equipamento | IP / Acesso | Usuário conhecido | Observações |  |
+| --- | --- | --- | --- | --- |
+| Firewall OPNsense | `192.168.2.1` | `root` | Gateway, DHCP, VLANs e failover |  |
+| Switch TP-Link SG2218 | `192.168.100.2` | A preencher | Switch gerenciável principal |  |
+| VMware Host principal | `192.168.100.253` | `root` | Servidor VMware principal |  |
+| VMware Host firewall | `192.168.2.3` | `root` | VMware que roda a vm opnsense do firewall |  |
+| UCS / Univention Server | `192.168.100.254` | A preencher | Arquivos e Nextcloud |  |
+| UniFi Controller SSH | `192.168.100.194` | `unify` | Ubuntu |  |
+| UniFi Controller plataforma | 192.168.100.194:8443 | `unifi@tekz.com.br` | Conta da plataforma UniFi |  |
+| VM Windows atual | `192.168.2.142` | Usa usuario AD UCS | IP atual |  |
+| VM Windows prevista | `192.168.100.142` | A preencher | IP previsto após migração |  |
+
+## Exemplos de acesso
+
+### UniFi Controller via SSH
+
+```text
+ssh unify@192.168.100.194
+```
+
+## Local recomendado no Passbolt
+
+```text
+Clientes / Colônia Agrícola / OPNsense
+Clientes / Colônia Agrícola / Switch TP-Link SG2218
+Clientes / Colônia Agrícola / VMware Host
+Clientes / Colônia Agrícola / UCS
+Clientes / Colônia Agrícola / UniFi Controller
+Clientes / Colônia Agrícola / VM Windows
+Clientes / Colônia Agrícola / Infortel PPPoE
+Clientes / Colônia Agrícola / Starlink
+```
+
+## Observações
+
+- Credenciais sensíveis devem ficar em local seguro.
+- Esta página serve apenas como referência operacional.
+- A VM Windows está em processo de migração da rede antiga para a VLAN 100.
+- As credenciais de PPPoE não devem ser documentadas em texto aberto.

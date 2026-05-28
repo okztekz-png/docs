@@ -1,0 +1,52 @@
+---
+title: "Acessos"
+description: "Referência de acessos administrativos da infraestrutura da Jodano."
+icon: "key"
+---
+
+## Orientação de segurança
+
+<Warning>
+  Não registrar senhas, tokens ou credenciais sensíveis em texto aberto nesta página.
+</Warning>
+
+As credenciais devem ser armazenadas e consultadas no **Passbolt** da Tekz.
+
+## Equipamentos principais
+
+| Serviço / Equipamento | IP / Acesso | Usuário conhecido | Observações |
+| --- | --- | --- | --- |
+| Roteador Intelbras/Infortel | `192.168.1.1` | `admin` | Gateway principal da rede |
+| Proxmox Web | `192.168.1.193:8006` | `root` | Host de virtualização |
+| Servidor Windows | `192.168.1.253` | `Administrator` | Servidor virtualizado |
+| Winflector | Roda no `192.168.1.253` | A preencher | Acesso externo ao SIAF |
+
+## Acessos externos conhecidos
+
+### SIAF via Winflector
+
+O sistema **SIAF** possui acesso externo através do **Winflector**, que roda no servidor `192.168.1.253`.
+
+Esse acesso é utilizado pelo notebook do **Sr. Jodano**.
+
+## Dependências
+
+- Servidor `192.168.1.253` online.
+- Winflector em execução.
+- Encaminhamento de portas ativo no roteador.
+- Link de internet funcionando.
+- Regras de firewall/NAT preservadas.
+
+## Local recomendado no Passbolt
+
+```text
+Clientes / Jodano / Roteador
+Clientes / Jodano / Proxmox
+Clientes / Jodano / Servidor Windows
+Clientes / Jodano / Winflector
+```
+
+## Observações
+
+- Confirmar posteriormente se todos os acessos já estão cadastrados no Passbolt.
+- Documentar apenas referências ao cofre, nunca as senhas diretamente.

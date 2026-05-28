@@ -1,0 +1,53 @@
+---
+title: "Resumo"
+description: "Resumo geral da infraestrutura da Jodano."
+icon: "file-text"
+---
+
+## Resumo do ambiente
+
+A rede da **Jodano** é centralizada em um roteador Intelbras/Infortel, que recebe internet da ONU do provedor e distribui a conectividade para um switch principal localizado no rack, na sala do administrativo.
+
+A partir desse switch, a rede é redistribuída para toda a loja, incluindo setores administrativos, balcões, caixa, laboratório e demais pontos internos.
+
+O ambiente conta também com um servidor virtualizado em **Proxmox**, onde está hospedado o servidor principal da operação.
+
+## Estrutura principal
+
+- ONU do provedor
+- Roteador Intelbras/Infortel
+- Switch principal no rack
+- Rack localizado na sala do administrativo
+- Proxmox
+- Servidor virtualizado
+- Estações e setores da loja
+
+## Rede principal
+
+| Item | Informação |
+| --- | --- |
+| Sub-rede | `192.168.1.0/24` |
+| Gateway | `192.168.1.1` |
+| DHCP | Ativo no roteador |
+| Faixa DHCP | `192.168.1.100` até `192.168.1.200` |
+
+## Equipamentos principais
+
+| Equipamento | IP / Acesso | Observação |
+| --- | --- | --- |
+| Roteador Intelbras/Infortel | `192.168.1.1` | Gateway principal da rede |
+| Proxmox Web | `192.168.1.193:8006` | Host de virtualização |
+| Servidor principal | `192.168.1.253` | Servidor virtualizado dentro do Proxmox |
+
+## Observações gerais
+
+- O switch principal redistribui a rede para toda a loja.
+- Os equipamentos da loja recebem IP via DHCP.
+- O servidor `192.168.1.253` está virtualizado dentro do Proxmox.
+- O rack principal fica localizado na sala do administrativo.
+- Existe acesso externo ao sistema **SIAF** via **Winflector**.
+- O Winflector roda no servidor `192.168.1.253`.
+- As credenciais não devem ser documentadas em texto aberto.
+
+```text
+```

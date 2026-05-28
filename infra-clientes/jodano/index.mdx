@@ -1,0 +1,56 @@
+---
+title: "Visão Geral"
+description: "Documentação técnica da infraestrutura da Jodano."
+icon: "building"
+sidebarTitle: "Visão geral"
+---
+
+<div style={{ textAlign: "center", marginBottom: "32px" }}>
+  <img src="https://tekz.com.br/wp-content/uploads/2022/05/clientee-25.png" alt="Logo Jodano" style={{ maxWidth: "240px" }} />
+</div>
+
+## Visão geral
+
+Esta seção reúne a documentação técnica da infraestrutura da **Jodano**.
+
+O ambiente da Jodano é centralizado em um roteador Intelbras/Infortel, que recebe internet da ONU do provedor e distribui a conectividade para um switch principal localizado no rack da sala do administrativo.
+
+A partir desse switch, a rede é redistribuída para toda a loja, incluindo setores administrativos, balcões, caixa, laboratório e demais pontos internos.
+
+<CardGroup cols={2}>
+  <Card title="Resumo" icon="file-text" href="/infra-clientes/jodano/resumo">
+    Informações gerais sobre o ambiente, rede, servidor e pontos principais.
+  </Card>
+
+  <Card title="Topologia" icon="network-wired" href="/infra-clientes/jodano/topologia">
+    Visão física e lógica da rede da loja.
+  </Card>
+
+  <Card title="Rede" icon="ethernet" href="/infra-clientes/jodano/rede">
+    Sub-rede, gateway, DHCP, equipamentos principais e organização da rede.
+  </Card>
+
+  <Card title="Acessos" icon="key" href="/infra-clientes/jodano/acessos">
+    Referências aos acessos administrativos e serviços principais.
+  </Card>
+
+  <Card title="Firewall / Roteador" icon="shield" href="/infra-clientes/jodano/firewall">
+    Informações do roteador, DHCP, gateway e encaminhamentos de porta.
+  </Card>
+
+  <Card title="Servidores" icon="server" href="/infra-clientes/jodano/servidores">
+    Proxmox, servidor virtualizado e serviços hospedados.
+  </Card>
+
+  <Card title="Sistemas" icon="window" href="/infra-clientes/jodano/sistemas">
+    Sistemas usados pelo cliente e suas dependências.
+  </Card>
+
+  <Card title="Procedimentos" icon="book" href="/infra-clientes/jodano/procedimentos">
+    Rotinas de validação, acesso e checklist de indisponibilidade.
+  </Card>
+</CardGroup>
+
+<Warning>
+  As credenciais e senhas não devem ser registradas em texto aberto nesta documentação. Consulte o Passbolt da Tekz quando necessário.
+</Warning>

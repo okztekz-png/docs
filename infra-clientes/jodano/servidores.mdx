@@ -1,0 +1,56 @@
+---
+title: "Servidores"
+description: "Servidores, host de virtualização e serviços hospedados na Jodano."
+icon: "server"
+---
+
+## Host de virtualização
+
+### Proxmox
+
+| Item | Informação |
+| --- | --- |
+| Acesso web | `192.168.1.193:8006` |
+| Função | Host de virtualização do ambiente |
+| Localização física | Rack principal na sala do administrativo |
+| Usuário conhecido | `root` |
+
+<Warning>
+  A senha do Proxmox deve ser consultada no Passbolt. Não registrar senha em texto aberto nesta documentação.
+</Warning>
+
+## Servidor virtualizado
+
+| Item | Informação |
+| --- | --- |
+| IP | `192.168.1.253` |
+| Hospedagem | Virtualizado dentro do Proxmox |
+| Função | Servidor principal da operação |
+| Sistema operacional | A confirmar |
+| Usuário conhecido | `Administrator` |
+
+## Serviços conhecidos no servidor `192.168.1.253`
+
+### Winflector
+
+| Item | Informação |
+| --- | --- |
+| Função | Fornecer acesso externo remoto ao sistema SIAF |
+| Uso conhecido | Acesso do notebook do Sr. Jodano |
+| Dependência | Encaminhamento de portas no roteador |
+| Servidor | `192.168.1.253` |
+
+## Estrutura conhecida
+
+Atualmente, o ambiente documentado possui:
+
+- Proxmox como host de virtualização.
+- Servidor `192.168.1.253` hospedado dentro do Proxmox.
+- Winflector rodando dentro do servidor `192.168.1.253`.
+
+## Pontos a confirmar
+
+- Não há outras VMs além do servidor principal.
+- Recursos da VM Servidor: CPU 6 Nucleos, 12 GB RAM e 256GB de SSD.
+- Não há políticas de backup da VM, somente é feito snapshots quando vai atualizar o Lazzumix.
+- Firewall interno do Windows é gerenciado pelo Acronis (gerenciado pela Tekz).

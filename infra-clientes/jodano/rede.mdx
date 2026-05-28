@@ -1,0 +1,64 @@
+---
+title: "Rede"
+description: "Informações de rede, DHCP, gateway e distribuição interna da Jodano."
+icon: "ethernet"
+---
+
+## Rede principal
+
+A rede da Jodano opera atualmente em uma única sub-rede local.
+
+| Item | Informação |
+| --- | --- |
+| Sub-rede | `192.168.1.0/24` |
+| Gateway | `192.168.1.1` |
+| DHCP | Ativo no roteador |
+| Faixa DHCP | `192.168.1.100` até `192.168.1.200` |
+| VLANs | Não documentadas atualmente |
+
+## Equipamentos principais de rede
+
+| Equipamento | IP / Acesso | Função |
+| --- | --- | --- |
+| Roteador Intelbras/Infortel | `192.168.1.1` | Gateway, DHCP e encaminhamentos |
+| Switch principal | A preencher | Distribuição da rede para a loja |
+| Proxmox | `192.168.1.193:8006` | Host de virtualização |
+| Servidor principal | `192.168.1.253` | Servidor virtualizado |
+
+## Distribuição física
+
+O roteador recebe a internet da ONU do provedor e entrega a rede para o switch principal.
+
+O switch principal fica localizado no rack da sala do administrativo e redistribui a rede para os demais pontos da loja.
+
+## Setores atendidos
+
+### Administrativo
+
+- Jodano
+- Financeiro 01
+- Faturamento 02
+- Financeiro
+- Selfcolor
+
+### Balcões
+
+- Balcão 01
+- Balcão 02
+- Balcão 03
+- Balcão 04
+- Balcão 05
+- Balcão 06
+
+### Operação / Atendimento
+
+- Caixa
+- Leda
+- Laboratório
+
+## Observações
+
+- Os equipamentos da loja recebem IP via DHCP.
+- Não há segmentação por VLAN documentada até o momento.
+- O rack principal concentra a distribuição da rede.
+- Futuramente, recomenda-se mapear as portas físicas do switch e os pontos de rede por setor.

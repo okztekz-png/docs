@@ -1,0 +1,99 @@
+---
+title: "Servidores"
+description: "Ambientes VMware, máquinas virtuais e serviços internos da Colônia Agrícola."
+icon: "server"
+---
+
+## Visão geral
+
+A infraestrutura possui dois ambientes VMware distintos:
+
+1. **Appliance VMware dedicado ao OPNsense**
+2. **Servidor VMware principal**, responsável pelas máquinas virtuais internas
+
+## VMware 1 — Appliance do firewall
+
+| Item | Informação |
+| --- | --- |
+| Função | Hospedar apenas a máquina virtual do OPNsense |
+| Observação | Ambiente dedicado ao firewall |
+| Rede | VLAN 1 |
+| IP de gestão | 192.168.2.3 |
+
+## VMware 2 — Servidor principal
+
+| Item | Informação |
+| --- | --- |
+| Função | Hospedar os serviços internos da empresa |
+| IP do host | `192.168.100.253` |
+| Usuário padrão | `root` |
+| Rede principal | VLAN 100 |
+| Ambiente | Servidor VMware principal |
+
+<Warning>
+  A senha do VMware deve ser consultada no Passbolt. Não registrar senha em texto aberto nesta documentação.
+</Warning>
+
+## Máquinas virtuais hospedadas
+
+### UCS / Univention Server
+
+| Item | Informação |
+| --- | --- |
+| Função principal | Servidor de arquivos |
+| IP | `192.168.100.254` |
+| Serviços relacionados | Arquivos e Nextcloud |
+| Observação | O Nextcloud roda neste servidor |
+
+### UniFi Controller
+
+| Item | Informação |
+| --- | --- |
+| Sistema operacional | Ubuntu |
+| Função principal | Controlador UniFi |
+| IP | `192.168.100.194` |
+| Usuário SSH do sistema | `unify` |
+| Exemplo de acesso SSH | `ssh unify@192.168.100.194` |
+| Conta da plataforma UniFi | `unifi@tekz.com.br` |
+
+### VM Windows
+
+| Item | Informação |
+| --- | --- |
+| Sistema operacional | Windows |
+| IP atual | `192.168.2.142` |
+| Origem do IP | DHCP com fixação/reserva no firewall |
+| Migração prevista | `192.168.100.142` |
+| Função | Gerenciar regras de AD do UCS |
+| Observação | Revisar após migração completa para VLAN 100 |
+
+## Segmentação de rede
+
+Os serviços internos do servidor VMware principal devem permanecer na:
+
+| Item | Informação |
+| --- | --- |
+| VLAN | VLAN 100 |
+| Rede | `192.168.100.0/24` |
+
+## Resumo dos IPs principais
+
+| Serviço / Equipamento | IP |
+| --- | --- |
+| VMware Host | `192.168.100.253` |
+| UCS | `192.168.100.254` |
+| UniFi Controller | `192.168.100.194` |
+| VM Windows atual | `192.168.2.142` |
+| VM Windows prevista | `192.168.100.142` |
+
+## Pontos pendentes a documentar
+
+- Recursos das VMs: CPU, RAM e disco.
+- Política de backup das VMs.
+- Sistema operacional detalhado da VM Windows.
+- Status de armazenamento dos datastores.
+
+## Observações
+
+- O host VMware, o UCS e o UniFi Controller já fazem parte da rede local interna.
+- A VM Windows ainda está em transição de endereçamento.

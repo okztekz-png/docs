@@ -1,0 +1,71 @@
+---
+title: "Firewall / Roteador"
+description: "Informações do roteador, DHCP, gateway e encaminhamentos de porta da Jodano."
+icon: "shield"
+---
+
+## Equipamento
+
+| Item | Informação |
+| --- | --- |
+| Tipo | Roteador Intelbras / Infortel |
+| IP | `192.168.1.1` |
+| Usuário conhecido | `admin` |
+| Função | Gateway principal, DHCP e encaminhamento de portas |
+
+<Warning>
+  A senha do roteador deve ser consultada no Passbolt. Não registrar senha em texto aberto nesta documentação.
+</Warning>
+
+## Função no ambiente
+
+O roteador é responsável por:
+
+- receber internet da ONU do provedor;
+- atuar como gateway principal da rede local;
+- fornecer DHCP para a rede interna;
+- encaminhar tráfego para a rede da loja através do switch principal;
+- manter encaminhamentos de porta para serviços internos específicos.
+
+## DHCP
+
+| Item | Informação |
+| --- | --- |
+| Status | Ativo |
+| Faixa DHCP | `192.168.1.100` até `192.168.1.200` |
+| Gateway entregue | `192.168.1.1` |
+
+## Topologia relacionada
+
+```text
+ONU do provedor
+    ↓
+Roteador Intelbras/Infortel - 192.168.1.1
+    ↓
+Switch principal no rack da sala do administrativo
+    ↓
+Rede interna da loja
+```
+
+## Encaminhamentos de porta
+
+O roteador possui regras de encaminhamento de portas para acesso externo a serviços internos.
+
+### Uso conhecido
+
+- Acesso externo ao sistema **SIAF**.
+- Acesso utilizado pelo notebook do **Sr. Jodano**.
+- O acesso externo é viabilizado através do programa **Winflector**.
+
+## Tabela de encaminhamentos
+
+| Serviço | Porta externa | IP interno | Porta interna | Finalidade | Observações |
+| --- | --- | --- | --- | --- | --- |
+| Winflector / SIAF | 5000 | `192.168.1.253` | 80 | Acesso externo ao SIAF | Uso pelo notebook do Sr. Jodano |
+
+## Observações importantes
+
+- O Winflector roda no servidor `192.168.1.253`.
+- As portas encaminhadas devem ser levantadas e documentadas individualmente.
+- Alterações no roteador podem impactar o acesso externo ao SIAF.
+- Antes de trocar o roteador, exportar ou fotografar as regras de NAT/encaminhamento.

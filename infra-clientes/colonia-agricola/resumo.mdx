@@ -1,0 +1,81 @@
+---
+title: "Resumo"
+description: "Resumo geral da infraestrutura da Colônia Agrícola."
+icon: "file-text"
+---
+
+## Cliente
+
+**Colônia Agrícola**
+
+## Resumo do ambiente
+
+O ambiente de TI da **Colônia Agrícola** é composto por um firewall **OPNsense**, um switch gerenciável **TP-Link SG2218**, um switch legado para equipamentos de segurança, um **AP UniFi** e dois ambientes VMware.
+
+A infraestrutura foi segmentada em VLANs para separar:
+
+- segurança e monitoramento;
+- rede local interna;
+- rede Wi-Fi de visitantes.
+
+O roteamento entre as VLANs é realizado pelo firewall OPNsense.
+
+Além da parte de rede, o ambiente conta com um servidor VMware dedicado que hospeda máquinas virtuais importantes para a operação, incluindo:
+
+- UCS / Univention Server;
+- UniFi Controller;
+- Máquina virtual Windows.
+
+Também existe um appliance VMware separado, dedicado à virtualização do OPNsense.
+
+## Objetivo da segmentação
+
+A segmentação foi definida para:
+
+- manter a rede de segurança/monitoramento sem necessidade de migração massiva;
+- separar a rede local cabeada e os servidores internos em uma sub-rede própria;
+- isolar a rede Wi-Fi de visitantes;
+- organizar melhor a administração da rede;
+- facilitar controle, documentação e futuras expansões.
+
+## Estrutura principal do ambiente
+
+- Firewall OPNsense responsável por:
+  - failover de internet;
+  - roteamento entre VLANs;
+  - gateway e DHCP das redes internas.
+- Switch gerenciável TP-Link SG2218 como núcleo da rede local.
+- Switch legado conectado à VLAN de segurança.
+- AP UniFi conectado ao switch gerenciável, transportando múltiplas VLANs.
+- Servidor VMware principal com VMs internas.
+- Appliance VMware secundário hospedando apenas o firewall OPNsense.
+
+## Redes utilizadas
+
+| VLAN | Finalidade | Rede |
+| --- | --- | --- |
+| VLAN 1 | Segurança / Monitoramento | `192.168.2.0/24` |
+| VLAN 10 | Visitantes / Wi-Fi | `192.168.10.0/24` |
+| VLAN 100 | Rede local cabeada / servidores internos | `192.168.100.0/24` |
+
+## Equipamentos principais
+
+| Equipamento / Serviço | IP / Acesso | Observações |
+| --- | --- | --- |
+| Firewall OPNsense | `192.168.2.1` | Gateway da rede existente |
+| Switch TP-Link SG2218 | `192.168.100.2` | IP de gestão |
+| VMware Host principal | `192.168.100.253` | Servidor VMware principal |
+| VMware Host firewall | `192.168.2.3` | VMware que roda a vm opnsense do firewall |
+| UCS | `192.168.100.254` | Univention / arquivos / Nextcloud |
+| UniFi Controller | `192.168.100.194` | Controlador UniFi |
+| VM Windows atual | `192.168.2.142` | IP atual |
+| VM Windows prevista | `192.168.100.142` | IP após migração |
+
+## Observações gerais
+
+- O firewall OPNsense é o responsável pelo roteamento entre as VLANs.
+- O switch gerenciável possui IP de gestão na rede local.
+- O servidor VMware principal, o UCS e o UniFi Controller estão na VLAN 100.
+- O switch legado permanece em uso para concentrar os dispositivos de segurança/monitoramento.
+- O AP UniFi recebe múltiplas VLANs na porta trunk do switch.
+- A VM Windows ainda está em processo de migração da rede antiga para a VLAN 100.

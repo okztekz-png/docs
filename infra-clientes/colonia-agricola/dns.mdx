@@ -1,0 +1,56 @@
+---
+title: "DNS"
+description: "Informações de DNS interno, externo e resolução de nomes da Colônia Agrícola."
+icon: "globe"
+---
+
+## Status atual
+
+Até o momento, não há DNS externo ou domínio público documentado para a infraestrutura da **Colônia Agrícola**.
+
+## DNS interno
+
+| Item | Informação |
+| --- | --- |
+| Servidor DNS interno | A confirmar |
+| Domínio local | A confirmar |
+| DNS entregue via DHCP | A confirmar |
+| Equipamento responsável pelo DHCP | OPNsense |
+| Redes atendidas | VLAN 1, VLAN 10 e VLAN 100 |
+
+## Possíveis dependências
+
+O DNS pode impactar:
+
+- acesso ao Nextcloud;
+- acesso a compartilhamentos do UCS;
+- resolução de nomes internos;
+- dispositivos UniFi;
+- acesso a sistemas internos;
+- navegação dos clientes DHCP.
+
+## Pontos a confirmar
+
+- O OPNsense entrega DNS próprio ou DNS público via DHCP?
+- O UCS atua como servidor DNS interno?
+- Existe domínio local no Univention?
+- Existe domínio público relacionado ao Nextcloud?
+- Existe Cloudflare ou outro provedor DNS externo?
+- Quais DNS são entregues para VLAN 1, VLAN 10 e VLAN 100?
+
+## Modelo para registros futuros
+
+```text
+Domínio:
+Zona DNS:
+Servidor responsável:
+Registros importantes:
+TTL:
+Observações:
+```
+
+## Observações
+
+- Caso o UCS seja usado como DNS interno, documentar escopo e dependências.
+- Caso o Nextcloud tenha domínio externo, registrar onde o DNS é gerenciado.
+- Não registrar credenciais nesta página.

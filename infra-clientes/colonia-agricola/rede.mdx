@@ -1,0 +1,113 @@
+---
+title: "Rede"
+description: "Informações de rede, VLANs, DHCP, switch e segmentação da Colônia Agrícola."
+icon: "ethernet"
+---
+
+## Visão geral
+
+A rede da **Colônia Agrícola** foi organizada com segmentação por VLANs, usando o firewall OPNsense como roteador central entre as redes internas.
+
+O switch gerenciável TP-Link SG2218 atua como núcleo da rede local.
+
+## VLANs utilizadas
+
+| VLAN | Finalidade | Rede | DHCP |
+| --- | --- | --- | --- |
+| VLAN 1 | Segurança / Monitoramento | `192.168.2.0/24` | `192.168.2.100` até `192.168.2.200` |
+| VLAN 10 | Visitantes / Wi-Fi | `192.168.10.0/24` | `192.168.10.100` até `192.168.10.200` |
+| VLAN 100 | Rede local cabeada / servidores internos | `192.168.100.0/24` | `192.168.100.100` até `192.168.100.200` |
+
+## Gateways
+
+| Rede | Gateway |
+| --- | --- |
+| `192.168.2.0/24` | `192.168.2.1` |
+| `192.168.10.0/24` | Firewall OPNsense |
+| `192.168.100.0/24` | Firewall OPNsense |
+
+## Switch principal
+
+| Item | Informação |
+| --- | --- |
+| Fabricante / Modelo | TP-Link SG2218 |
+| Tipo | Switch gerenciável |
+| IP de gestão | `192.168.100.2` |
+| Função | Núcleo da rede local |
+| Uplink do firewall | Porta 16 |
+
+## Resumo das portas do switch
+
+### Portas 1 a 12
+
+| Item | Informação |
+| --- | --- |
+| Função | Rede local cabeada |
+| VLAN principal | VLAN 100 |
+| Uso esperado | PCs, impressoras, servidores e equipamentos internos |
+
+### Porta 13
+
+| Item | Informação |
+| --- | --- |
+| Função | Ligação com switch legado |
+| Destino | Switch não gerenciável |
+| Finalidade | Concentrar câmeras e equipamentos de segurança |
+| VLAN utilizada | VLAN 1 |
+| Observação | Mantém a infraestrutura de segurança isolada da rede local |
+
+### Porta 14
+
+| Item | Informação |
+| --- | --- |
+| Uso atual | Sem utilização documentada |
+
+### Porta 15
+
+| Item | Informação |
+| --- | --- |
+| Função | Uplink para AP UniFi |
+| Tipo | Trunk |
+| VLANs transportadas | VLAN 1, VLAN 10 e VLAN 100 |
+| Observação | O AP distribui redes Wi-Fi conforme a VLAN de cada SSID |
+
+### Porta 16
+
+| Item | Informação |
+| --- | --- |
+| Função | Uplink LAN do firewall |
+| Origem | Interface LAN do OPNsense `eth4` |
+| Observação | Porta principal de entrada da rede no switch |
+
+## Switch legado
+
+| Item | Informação |
+| --- | --- |
+| Tipo | Switch não gerenciável |
+| Ligação | Porta 13 do switch principal |
+| Função | Atender o ambiente de segurança / monitoramento |
+| VLAN | VLAN 1 |
+
+## AP UniFi
+
+| Item | Informação |
+| --- | --- |
+| Ligação | Porta 15 do switch gerenciável |
+| Função | Distribuir redes sem fio com separação por VLAN |
+| Tipo de porta | Trunk |
+| VLANs recebidas | VLAN 1, VLAN 10 e VLAN 100 |
+
+## Exemplos de SSIDs
+
+| SSID | VLAN |
+| --- | --- |
+| Visitantes | VLAN 10 |
+| Colônia Agrícola | VLAN 100 |
+
+## Observações
+
+- A VLAN 1 foi mantida para preservar a infraestrutura de segurança já existente.
+- A VLAN 100 será a rede principal da operação interna.
+- A VLAN 10 é exclusiva para visitantes e Wi-Fi.
+- O roteamento entre VLANs é realizado pelo OPNsense.
+- Futuramente, recomenda-se documentar o modo exato de cada porta no switch: tagged, untagged e PVID.
