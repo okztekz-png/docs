@@ -166,7 +166,8 @@
   },
   "logo": {
     "light": "/images/logo_tekz_light.svg",
-    "dark": "/images/Tekz-Branco-101x50-1.png"
+    "dark": "/images/Tekz-Branco-101x50-1.png",
+    "href": "https://tekz.com.br"
   },
   "navbar": {
     "primary": {
