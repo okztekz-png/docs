@@ -75,7 +75,7 @@ A LAN principal concentra os servidores e serviços internos mais importantes da
 | Rede | `172.16.100.0/24` |
 | Finalidade | Bancada técnica, testes e equipamentos em manutenção |
 | DHCP | `172.16.100.100` até `172.16.100.200` |
-| Gateway | 72.16.100.1 |
+| Gateway | 172.16.100.1 |
 
 ## VLAN 11 — Rider
 
@@ -85,7 +85,7 @@ A LAN principal concentra os servidores e serviços internos mais importantes da
 | Rede | `172.16.11.0/24` |
 | Finalidade | Rede Rider |
 | DHCP | `172.16.11.100` até `172.16.11.105` |
-| Gateway | 72.16.11.1 |
+| Gateway | 172.16.11.1 |
 
 ## VLAN 10 — Visitantes
 
@@ -95,7 +95,7 @@ A LAN principal concentra os servidores e serviços internos mais importantes da
 | Rede | `172.16.10.0/24` |
 | Finalidade | Rede de visitantes |
 | DHCP | `172.16.10.100` até `172.16.10.200` |
-| Gateway | 72.16.10.1 |
+| Gateway | 172.16.10.1 |
 
 ## Isolamento entre VLANs
 
@@ -322,7 +322,6 @@ Antes de alterar NAT, firewall, VLAN ou VPN:
 
 - Interfaces físicas/virtuais exatas associadas à LAN e VLANs.
 - Gateway exato de cada VLAN.
-- Status atual da regra DNS para `172.16.0.153`.
 - Se todos os NATs legados ainda estão em uso.
 - Se o Proxmox deve continuar exposto pela WAN.
 - Se o Elastic deve continuar exposto pela WAN.
