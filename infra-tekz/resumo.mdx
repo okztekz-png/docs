@@ -1,3 +1,311 @@
 ---
-title: "resumo"
+title: "Resumo"
+description: "Resumo geral da infraestrutura interna da Tekz Tecnologias."
+icon: "file-text"
 ---
+
+## Visão geral
+
+A infraestrutura interna da **Tekz Tecnologias** é composta por firewall OPNsense, rede local segmentada por VLANs, servidor Proxmox, máquinas virtuais internas, ambiente Docker com Portainer e serviços publicados na web através de Traefik, Cloudflare e Oracle Cloud.
+
+O ambiente local funciona como base operacional da Tekz, hospedando serviços internos, automações, controlador UniFi, Nextcloud, AD/arquivos, containers Docker, sistemas de atendimento, integrações e ferramentas de monitoramento.
+
+## Estrutura principal
+
+A infraestrutura é dividida em alguns blocos principais:
+
+- **Firewall OPNsense**
+- **Rede local e VLANs**
+- **Servidor Proxmox**
+- **Máquinas virtuais internas**
+- **VM Services com Docker / Portainer**
+- **Traefik para publicação local de serviços**
+- **Cloudflare para DNS público**
+- **Oracle Cloud para serviços externos auxiliares**
+- **OpenVPN para acesso remoto seguro**
+- **Serviços internos e públicos da Tekz**
+
+## Firewall principal
+
+O firewall principal da Tekz é um **OPNsense** rodando virtualizado em um appliance VMware.
+
+| Item | Informação |
+| --- | --- |
+| Firewall | OPNsense |
+| IP LAN | `172.16.0.1` |
+| Função | Gateway, DHCP, VLANs, NAT, regras de firewall e OpenVPN |
+| Ambiente | Appliance VMware dedicado |
+
+O firewall é responsável por:
+
+- gateway da rede local;
+- DHCP da LAN e VLANs;
+- isolamento entre VLANs;
+- regras de firewall;
+- redirecionamento de portas;
+- acesso VPN externo via OpenVPN.
+
+## Redes e VLANs
+
+A rede interna da Tekz possui uma LAN principal e três VLANs documentadas.
+
+| Rede | Finalidade | Gateway | DHCP |
+| --- | --- | --- | --- |
+| LAN | Rede principal interna | `172.16.0.1` | `172.16.0.100` até `172.16.0.200` |
+| VLAN 100 | Bancada | A confirmar | `172.16.100.100` até `172.16.100.200` |
+| VLAN 11 | Rider | A confirmar | `172.16.11.100` até `172.16.11.105` |
+| VLAN 10 | Visitantes | A confirmar | `172.16.10.100` até `172.16.10.200` |
+
+<Note>
+  As VLANs possuem regras no firewall bloqueando a comunicação direta entre uma rede e outra.
+</Note>
+
+## VPN
+
+A Tekz utiliza um servidor **OpenVPN** no OPNsense para acesso externo seguro à rede local da empresa.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | OpenVPN |
+| Protocolo | UDP |
+| Porta | `1194` |
+| Rede VPN | `10.20.30.0/24` |
+| Finalidade | Acesso externo à rede local da Tekz |
+
+## Servidor Proxmox
+
+O servidor Proxmox principal hospeda as VMs internas da Tekz.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | Proxmox |
+| IP / Acesso | `172.16.0.230:8006` |
+| Função | Host de virtualização local |
+| Observação | Hospeda VMs importantes da operação interna |
+
+## Máquinas virtuais principais
+
+| VM | IP | Função principal |
+| --- | --- | --- |
+| automation | `172.16.0.152` | Serviços legados, automações, Elastic, relatórios e integrações antigas |
+| nextcloud | `172.16.0.118` | Ubuntu com Nextcloud instalado diretamente |
+| univention | `172.16.0.254` | UCS, arquivos locais e servidor de AD |
+| unifi-auto | `172.16.0.250` | Controlador UniFi central da Tekz |
+| services | `172.16.0.253` | Portainer, Docker Swarm, Traefik e serviços em containers |
+
+## VM Automation
+
+A VM `automation` possui IP `172.16.0.152` e concentra serviços legados e automações antigas.
+
+Serviços conhecidos:
+
+- n8n legado;
+- Evolution API legado;
+- automações de relatórios de firewall;
+- Elastic para coleta de dados de firewall;
+- pequenos serviços e integrações antigas;
+- gerador PDF de relatórios dos firewalls.
+
+Exemplo de serviço conhecido:
+
+```text
+http://172.16.0.152:85/index.html
+```
+
+<Warning>
+  Algumas automações desta VM podem estar legadas ou não funcionando corretamente. Revisar antes de depender operacionalmente desses serviços.
+</Warning>
+
+## VM Nextcloud
+
+A VM `nextcloud` possui IP `172.16.0.118`.
+
+| Item | Informação |
+| --- | --- |
+| Sistema | Ubuntu |
+| Serviço principal | Nextcloud |
+| IP | `172.16.0.118` |
+| Observação | O Nextcloud roda diretamente dentro do Ubuntu |
+
+## VM Univention Server
+
+A VM `univention` possui IP `172.16.0.254`.
+
+| Item | Informação |
+| --- | --- |
+| Sistema | Univention Corporate Server |
+| IP | `172.16.0.254` |
+| Funções | Arquivos locais e AD |
+| Observação | Servidor interno importante para autenticação e arquivos |
+
+## VM UniFi Auto
+
+A VM `unifi-auto` possui IP `172.16.0.250`.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | UniFi Controller |
+| IP | `172.16.0.250` |
+| Domínio público | `unifi.tekz.com.br` |
+| Função | Controlador UniFi central da Tekz |
+
+Essa VM hospeda o controlador UniFi/Ubiquiti central da Tekz, usado para conectar e gerenciar sites de clientes remotamente.
+
+## VM Services
+
+A VM `services` possui IP `172.16.0.253` e é uma das máquinas mais importantes da infraestrutura interna.
+
+| Item | Informação |
+| --- | --- |
+| IP | `172.16.0.253` |
+| Função | Docker, Portainer, Traefik e serviços internos |
+| Portainer público | `painelncst.tekz.com.br` |
+| Passbolt privado | `172.16.0.253:8443` |
+
+Nesta VM rodam:
+
+- Portainer;
+- Docker Swarm;
+- Traefik;
+- Chatwoot;
+- n8n;
+- Dify;
+- Evolution / EvoGo;
+- Docmost;
+- Passbolt;
+- PostgreSQL;
+- Redis;
+- PGAdmin;
+- Report Service;
+- NOC-TV;
+- outros serviços e stacks auxiliares.
+
+## Publicação de serviços
+
+A publicação web dos serviços internos normalmente segue este fluxo:
+
+```text
+Cloudflare
+    ↓
+managerncst.tekz.com.br
+    ↓
+IP público local da Tekz: 179.51.153.51
+    ↓
+Firewall OPNsense
+    ↓
+NAT 80/443
+    ↓
+Traefik na VM Services
+    ↓
+Container / serviço Docker
+```
+
+O registro principal usado para entrada dos serviços locais é:
+
+```text
+managerncst.tekz.com.br → 179.51.153.51
+```
+
+A partir dele, os serviços são publicados criando CNAMEs no Cloudflare apontando para `managerncst.tekz.com.br`.
+
+## Exemplos de serviços publicados localmente
+
+| Serviço | Domínio | Observação |
+| --- | --- | --- |
+| Portainer | `painelncst.tekz.com.br` | Painel de containers |
+| Chatwoot | `chat.tekz.com.br` | Atendimento |
+| Kanban Chatwoot | `kanban.tekz.com.br` | Addon do Chatwoot |
+| Dify Web | `difyncst.tekz.com.br` | Interface do Dify |
+| Dify API | `difyapincst.tekz.com.br` | API do Dify |
+| n8n Editor | `editorncst.tekz.com.br` | Interface do n8n |
+| n8n Webhook | `hookncst.tekz.com.br` | Webhooks do n8n |
+| EvoGo | `evogo.tekz.com.br` | API Evolution Go |
+| Report HelpTekz | `reporthelp.tekz.com.br` | Gerador de relatórios |
+
+## Oracle Cloud
+
+A Tekz também utiliza uma VM na **Oracle Cloud** para serviços auxiliares com maior disponibilidade externa.
+
+Serviços conhecidos na Oracle Cloud:
+
+- Nginx Proxy Manager;
+- Uptime Kuma.
+
+| Serviço | Acesso |
+| --- | --- |
+| Nginx Proxy Manager | `http://144.22.149.6:81/` |
+| Uptime Kuma | `kumancst.tekz.com.br` |
+
+<Note>
+  O Uptime Kuma foi migrado para a Oracle Cloud porque o link externo é mais confiável e não depende da internet local da Tekz.
+</Note>
+
+## Serviços privados
+
+Alguns serviços não possuem domínio público e devem ser acessados apenas pela rede local ou VPN.
+
+| Serviço | Acesso | Observação |
+| --- | --- | --- |
+| Passbolt | `172.16.0.253:8443` | Cofre de senhas da Tekz |
+| Proxmox | `172.16.0.230:8006` | Virtualização local |
+| OPNsense | `172.16.0.1` | Firewall principal |
+| UCS | `172.16.0.254` | AD e arquivos locais |
+| Automation | `172.16.0.152` | Serviços legados e automações |
+
+## Serviços críticos
+
+Os serviços mais críticos da infraestrutura interna são:
+
+- OPNsense;
+- OpenVPN;
+- Proxmox;
+- VM Services;
+- Portainer;
+- Traefik;
+- Passbolt;
+- Chatwoot;
+- n8n;
+- Evolution / EvoGo;
+- UniFi Controller;
+- Univention Server;
+- Nextcloud;
+- Uptime Kuma;
+- NOC-TV.
+
+## Observações importantes
+
+<Warning>
+  Não registrar senhas, tokens, chaves privadas, credenciais de banco, credenciais de API ou dados sensíveis diretamente nesta documentação.
+</Warning>
+
+As credenciais devem ser armazenadas no cofre oficial da Tekz.
+
+## Pontos a revisar
+
+- Confirmar quais serviços da VM `automation` ainda estão ativos.
+- Revisar automações antigas de relatório de firewall.
+- Confirmar status atual das stacks inativas no Portainer.
+- Definir política de backup para Proxmox, VMs, bancos e volumes Docker.
+- Documentar restauração dos serviços críticos.
+- Revisar portas expostas diretamente no firewall.
+- Avaliar serviços antigos publicados fora do Traefik.
+- Atualizar dependências entre Cloudflare, Traefik, Portainer e Oracle Cloud.
+
+## Resumo operacional
+
+A infraestrutura interna da Tekz pode ser entendida em três camadas principais:
+
+### Camada local
+
+Inclui firewall OPNsense, LAN, VLANs, Proxmox, VMs e serviços privados.
+
+### Camada de containers
+
+Inclui a VM Services, Docker Swarm, Portainer, Traefik, bancos e stacks de aplicações.
+
+### Camada pública
+
+Inclui Cloudflare, DNS público, NAT no firewall, Traefik local e serviços auxiliares na Oracle Cloud.
+
+```text
+```
