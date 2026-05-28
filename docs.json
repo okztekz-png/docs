@@ -170,20 +170,6 @@
         ]
       },
       {
-        "group": "Serviços Internos",
-        "icon": "toolbox",
-        "pages": [
-          "servicos-internos/index",
-          "servicos-internos/passbolt",
-          "servicos-internos/vpn",
-          "servicos-internos/zabbix",
-          "servicos-internos/grafana",
-          "servicos-internos/unifi",
-          "servicos-internos/dns",
-          "servicos-internos/email"
-        ]
-      },
-      {
         "group": "Playbooks",
         "icon": "book",
         "pages": [
