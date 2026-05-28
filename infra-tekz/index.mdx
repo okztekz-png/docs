@@ -140,3 +140,13 @@ Traefik na VM Services
     ↓
 Serviço Docker correspondente
 ```
+
+Para novos serviços publicados via Traefik, normalmente é criado um CNAME no Cloudflare apontando para:
+
+Os serviços mais sensíveis para a operação interna da Tekz incluem:
+
+As credenciais devem ser armazenadas no cofre oficial da Tekz.
+
+Nesta documentação, registre apenas:
+
+Credencial armazenada em: Passbolt / Tekz / Nome do Serviço Observações Esta documentação deve ser atualizada sempre que um novo serviço for publicado. Alterações em DNS, Cloudflare, Traefik, NAT ou firewall devem ser registradas. Serviços antigos ou inativos devem ser marcados como “inativo” antes de serem removidos. Stacks legadas devem ser mantidas documentadas enquanto ainda existirem no Portainer. Serviços críticos devem ter backup e monitoramento documentados.
