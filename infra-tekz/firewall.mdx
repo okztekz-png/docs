@@ -204,11 +204,7 @@ Existe uma regra na LAN para redirecionar tráfego DNS.
 
 | Interface | Protocolo | Porta | Destino interno | Descrição |
 | --- | --- | --- | --- | --- |
-| LAN | TCP/UDP | `53` | `172.16.0.153` | Redirecionar tráfego DNS para Unbound DNS no Firewall |
-
-<Warning>
-  Validar posteriormente se o destino `172.16.0.153` ainda está correto, pois o firewall principal documentado é `172.16.0.1`.
-</Warning>
+| LAN | TCP/UDP | `53` | `172.16.0.1` | Redirecionar tráfego DNS para Unbound DNS no Firewall |
 
 ## NATs e portas publicadas
 
