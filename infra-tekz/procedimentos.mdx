@@ -1,3 +1,677 @@
 ---
-title: "procedimentos"
+title: "Procedimentos"
+description: "Procedimentos operacionais para manutenção, validação e troubleshooting da infraestrutura interna da Tekz."
+icon: "book"
 ---
+
+## Visão geral
+
+Esta página reúne procedimentos operacionais para manutenção, validação e troubleshooting da infraestrutura interna da **Tekz Tecnologias**.
+
+Os procedimentos foram organizados para ajudar em situações como:
+
+- queda de serviço público;
+- falha de DNS;
+- problema no Traefik;
+- falha em container;
+- indisponibilidade do Portainer;
+- falha no Chatwoot;
+- falha no n8n;
+- problema na VPN;
+- falha no Proxmox;
+- reinicialização da VM `services`;
+- alteração em DNS, NAT ou stack;
+- revisão de serviços legados.
+
+<Warning>
+  Antes de alterar firewall, DNS, NAT, Traefik, Portainer, Proxmox, banco de dados ou stack crítica, registre o estado atual e tenha um plano de rollback.
+</Warning>
+
+## Acesso à infraestrutura
+
+## Acesso via VPN
+
+Quando estiver fora da rede local da Tekz, o acesso administrativo deve ser feito preferencialmente pela VPN OpenVPN.
+
+| Item | Informação |
+| --- | --- |
+| Tipo | OpenVPN |
+| Protocolo | UDP |
+| Porta | `1194` |
+| Rede VPN | `10.20.30.0/24` |
+| Firewall | OPNsense |
+
+### Validação após conectar
+
+1. Confirmar se o cliente recebeu IP da rede:
+
+```text
+10.20.30.0/24
+```
+
+2. Testar acesso ao firewall:
+
+```text
+https://172.16.0.1
+```
+
+3. Testar acesso ao Proxmox:
+
+```text
+https://172.16.0.230:8006
+```
+
+4. Testar acesso à VM `services`:
+
+```text
+172.16.0.253
+```
+
+5. Testar acesso ao Passbolt:
+
+```text
+https://172.16.0.253:8443
+```
+
+## Acesso ao OPNsense
+
+O firewall principal está em:
+
+```text
+https://172.16.0.1
+```
+
+### Validar no OPNsense
+
+- status da WAN;
+- regras de NAT;
+- regras de firewall;
+- OpenVPN;
+- LAN;
+- VLANs;
+- DHCP;
+- logs;
+- gateways;
+- redirecionamentos.
+
+<Warning>
+  Alterações incorretas no OPNsense podem afetar internet, VPN, publicação de serviços, VLANs e acesso remoto.
+</Warning>
+
+## Acesso ao Proxmox
+
+O Proxmox está em:
+
+```text
+https://172.16.0.230:8006
+```
+
+### Validar no Proxmox
+
+- host online;
+- uso de CPU;
+- uso de RAM;
+- uso de disco/storage;
+- VMs ligadas;
+- snapshots antigos;
+- erros no host;
+- rede das VMs;
+- status da VM `services`.
+
+## Acesso ao Portainer
+
+O Portainer está publicado em:
+
+```text
+painelncst.tekz.com.br
+```
+
+### Validar no Portainer
+
+- stack `traefik`;
+- stack `postgres`;
+- stack `redis`;
+- stack `chatwoot`;
+- stack `n8n_*`;
+- stack `evolutiongo`;
+- stack `evo-go-connector`;
+- stack `portainer`;
+- containers parados;
+- containers em restart loop;
+- logs dos serviços;
+- volumes;
+- redes Docker.
+
+<Warning>
+  Não remover stacks ou volumes sem validar dependências e backup.
+</Warning>
+
+---
+
+# Procedimento: serviço público fora do ar
+
+Use este procedimento quando um domínio público da Tekz não abrir.
+
+Exemplos:
+
+- `chat.tekz.com.br`
+- `painelncst.tekz.com.br`
+- `editorncst.tekz.com.br`
+- `hookncst.tekz.com.br`
+- `evogo.tekz.com.br`
+- `reporthelp.tekz.com.br`
+
+## Passos
+
+1. Verificar se o problema afeta apenas um serviço ou vários.
+2. Testar DNS do domínio.
+3. Verificar se o domínio aponta para o destino correto:
+   - serviços via Traefik devem apontar para `managerncst.tekz.com.br`;
+   - serviços via Oracle devem passar pelo Nginx Proxy Manager.
+4. Se for serviço via Traefik, validar:
+
+```text
+Cloudflare → managerncst.tekz.com.br → 179.51.153.51 → OPNsense → Traefik → Container
+```
+
+5. Verificar se o IP público local está acessível.
+6. Validar NAT `80/443` no OPNsense.
+7. Verificar se a VM `services` está online.
+8. Verificar se o Traefik está ativo.
+9. Verificar se a stack do serviço está ativa no Portainer.
+10. Conferir logs do container.
+11. Testar acesso interno, se possível.
+12. Registrar incidente se houver impacto operacional.
+
+## Diagnóstico rápido
+
+| Sintoma | Possível causa |
+| --- | --- |
+| Todos os serviços via `managerncst` fora | Link local, OPNsense, NAT, VM `services` ou Traefik |
+| Apenas um domínio fora | DNS, rota Traefik ou container específico |
+| Erro 404 | Rota/label Traefik incorreta |
+| Erro 502 | Container fora, porta errada ou rede Docker |
+| Timeout | NAT, firewall, link, VM ou serviço parado |
+| HTTPS inválido | Certificado, Traefik, NPM ou DNS |
+
+---
+
+# Procedimento: todos os serviços via Traefik fora
+
+Use quando vários serviços que apontam para `managerncst.tekz.com.br` pararem ao mesmo tempo.
+
+## Serviços afetados normalmente
+
+- `chat.tekz.com.br`
+- `kanban.tekz.com.br`
+- `painelncst.tekz.com.br`
+- `editorncst.tekz.com.br`
+- `hookncst.tekz.com.br`
+- `difyncst.tekz.com.br`
+- `difyapincst.tekz.com.br`
+- `evogo.tekz.com.br`
+- `reporthelp.tekz.com.br`
+
+## Passos
+
+1. Verificar se `managerncst.tekz.com.br` resolve para:
+
+```text
+179.51.153.51
+```
+
+2. Verificar se o IP público local está respondendo.
+3. Verificar o link de internet da Tekz.
+4. Acessar o OPNsense.
+5. Validar NATs:
+
+| Porta externa | Destino interno | Porta interna |
+| --- | --- | --- |
+| `80` | `172.16.0.253` | `80` |
+| `443` | `172.16.0.253` | `443` |
+
+6. Validar se a VM `services` responde:
+
+```text
+172.16.0.253
+```
+
+7. Acessar Portainer.
+8. Verificar stack `traefik`.
+9. Conferir logs do Traefik.
+10. Testar um serviço interno diretamente pelo container/rede Docker, se necessário.
+11. Após normalizar, testar serviços críticos.
+
+## Serviços prioritários para testar
+
+| Serviço | Domínio |
+| --- | --- |
+| Chatwoot | `chat.tekz.com.br` |
+| Portainer | `painelncst.tekz.com.br` |
+| n8n Editor | `editorncst.tekz.com.br` |
+| n8n Webhook | `hookncst.tekz.com.br` |
+| Evolution Go | `evogo.tekz.com.br` |
+| Report HelpTekz | `reporthelp.tekz.com.br` |
+
+---
+
+# Procedimento: erro 404 no Traefik
+
+## Possíveis causas
+
+- domínio sem regra no Traefik;
+- label `Host()` incorreta;
+- stack publicada com domínio errado;
+- container não está na rede do Traefik;
+- DNS aponta corretamente, mas Traefik não tem rota;
+- serviço removido ou renomeado.
+
+## Passos
+
+1. Confirmar que o DNS aponta para `managerncst.tekz.com.br`.
+2. Verificar labels/regras do serviço no Portainer.
+3. Confirmar domínio configurado no Traefik.
+4. Confirmar se a stack está ativa.
+5. Verificar se o serviço está na rede correta.
+6. Conferir logs do Traefik.
+7. Corrigir labels/rota.
+8. Redeploy da stack, se necessário.
+
+---
+
+# Procedimento: erro 502 no Traefik
+
+## Possíveis causas
+
+- container parado;
+- serviço reiniciando;
+- porta interna errada;
+- aplicação não está escutando;
+- Traefik não alcança container;
+- rede Docker incorreta;
+- healthcheck falhando.
+
+## Passos
+
+1. Verificar se a stack está ativa.
+2. Verificar se o container está rodando.
+3. Conferir logs da aplicação.
+4. Confirmar porta interna configurada no Traefik.
+5. Verificar se o container está na rede do Traefik.
+6. Testar acesso interno ao container.
+7. Corrigir porta/rede/labels, se necessário.
+8. Redeploy da stack.
+
+---
+
+# Procedimento: publicar novo serviço via Traefik
+
+## Quando usar
+
+Use este procedimento para publicar novos serviços web que rodam na VM `services`.
+
+## Passos
+
+1. Criar ou atualizar a stack no Portainer.
+2. Confirmar porta interna da aplicação.
+3. Adicionar labels/regras do Traefik.
+4. Garantir que o serviço está na rede Docker usada pelo Traefik.
+5. Criar DNS no Cloudflare:
+
+```text
+novo-servico.tekz.com.br CNAME managerncst.tekz.com.br
+```
+
+6. Manter o registro como **Somente DNS**.
+7. Fazer deploy da stack.
+8. Validar logs do container.
+9. Validar logs do Traefik.
+10. Testar domínio externo.
+11. Documentar em:
+
+- `infra-tekz/stacks`;
+- `infra-tekz/traefik`;
+- `infra-tekz/dns-publico`;
+- `infra-tekz/servicos-publicos`.
+
+## Modelo de documentação
+
+```text
+Serviço:
+Stack:
+Domínio:
+Porta interna:
+Rede Docker:
+Dependências:
+Banco:
+Redis:
+Volumes:
+Observações:
+```
+
+---
+
+# Procedimento: alterar DNS no Cloudflare
+
+## Passos
+
+1. Identificar domínio.
+2. Registrar configuração atual.
+3. Confirmar se é `A` ou `CNAME`.
+4. Se for serviço local via Traefik, apontar para:
+
+```text
+managerncst.tekz.com.br
+```
+
+5. Se for o registro principal, validar IP público correto:
+
+```text
+179.51.153.51
+```
+
+6. Manter como **Somente DNS**, quando aplicável.
+7. Salvar alteração.
+8. Testar resolução DNS.
+9. Testar acesso ao serviço.
+10. Registrar alteração em incidentes/histórico, se for relevante.
+
+<Warning>
+  Alterar `managerncst.tekz.com.br` afeta vários serviços ao mesmo tempo.
+</Warning>
+
+---
+
+# Procedimento: alterar NAT no OPNsense
+
+## Antes de alterar
+
+- Identificar serviço afetado.
+- Registrar regra atual.
+- Confirmar IP interno.
+- Confirmar porta interna.
+- Confirmar porta externa.
+- Validar se há DNS relacionado.
+- Validar se há rota no Traefik ou NPM.
+- Planejar rollback.
+
+## Passos
+
+1. Acessar OPNsense.
+2. Ir até as regras de NAT.
+3. Localizar regra atual.
+4. Fazer print ou copiar a configuração.
+5. Alterar regra.
+6. Aplicar mudanças.
+7. Testar acesso externo.
+8. Testar acesso interno.
+9. Registrar alteração.
+
+## NATs críticos
+
+| Porta | Destino | Serviço |
+| --- | --- | --- |
+| `80` | `172.16.0.253:80` | Traefik |
+| `443` | `172.16.0.253:443` | Traefik |
+| `8006` | `172.16.0.230:8006` | Proxmox |
+| `8443` | `172.16.0.250:8443` | UniFi |
+| `8080` | `172.16.0.250:8080` | UniFi adoção |
+| `8086` | `172.16.0.118:443` | Nextcloud |
+| `8899` | `172.16.0.231:8000` | Gerador agente HelpTekz |
+
+---
+
+# Procedimento: reiniciar VM `services`
+
+## Atenção
+
+A VM `services` hospeda diversos serviços críticos.
+
+Antes de reiniciar, validar impacto em:
+
+- Chatwoot;
+- n8n;
+- Evolution Go;
+- Portainer;
+- Traefik;
+- Passbolt;
+- PostgreSQL;
+- Redis;
+- Report Service;
+- NOC-TV.
+
+## Passos
+
+1. Avisar equipe, se necessário.
+2. Verificar se há automações críticas em execução.
+3. Verificar containers com alta atividade.
+4. Confirmar se há backup recente, se for manutenção.
+5. Reiniciar VM pelo Proxmox.
+6. Aguardar a VM subir.
+7. Validar Docker.
+8. Validar Portainer.
+9. Validar Traefik.
+10. Validar PostgreSQL e Redis.
+11. Testar serviços críticos.
+
+## Serviços para testar após reboot
+
+| Serviço | Teste |
+| --- | --- |
+| Portainer | `painelncst.tekz.com.br` |
+| Chatwoot | `chat.tekz.com.br` |
+| n8n Editor | `editorncst.tekz.com.br` |
+| n8n Webhook | `hookncst.tekz.com.br` |
+| Evolution Go | `evogo.tekz.com.br` |
+| Passbolt | `https://172.16.0.253:8443` |
+| Report Service | `reporthelp.tekz.com.br` |
+| NOC-TV | Painel local/TV |
+
+---
+
+# Procedimento: reiniciar uma stack no Portainer
+
+## Passos
+
+1. Acessar Portainer.
+2. Localizar stack.
+3. Verificar logs antes da ação.
+4. Identificar containers relacionados.
+5. Reiniciar serviço/container.
+6. Acompanhar logs.
+7. Testar domínio ou endpoint.
+8. Validar dependências.
+9. Registrar se foi uma ação corretiva.
+
+<Warning>
+  Evite reiniciar PostgreSQL, Redis, Traefik ou stacks críticas sem validar impacto.
+</Warning>
+
+---
+
+# Procedimento: atualizar stack no Portainer
+
+## Antes de atualizar
+
+1. Copiar o compose atual.
+2. Verificar variáveis de ambiente.
+3. Verificar volumes.
+4. Verificar redes.
+5. Verificar dependências.
+6. Validar imagem nova.
+7. Planejar rollback.
+8. Evitar horário crítico.
+
+## Após atualizar
+
+1. Acompanhar logs.
+2. Testar container.
+3. Testar domínio.
+4. Testar integração dependente.
+5. Validar banco/Redis.
+6. Registrar alteração.
+
+---
+
+# Procedimento: remover stack inativa
+
+## Passos
+
+1. Confirmar que a stack está realmente inativa.
+2. Verificar se há DNS apontando para ela.
+3. Verificar se há labels no Traefik.
+4. Verificar se há webhooks no n8n.
+5. Verificar se há integrações no Chatwoot.
+6. Copiar compose atual.
+7. Identificar volumes.
+8. Fazer backup, se necessário.
+9. Remover stack.
+10. Manter volumes temporariamente, se houver dúvida.
+11. Registrar remoção.
+
+<Warning>
+  Não remover volumes sem certeza. Volumes podem conter dados importantes mesmo quando a stack está parada.
+</Warning>
+
+---
+
+# Procedimento: falha na VPN
+
+## Sintomas
+
+- OpenVPN não conecta.
+- Conecta, mas não acessa a LAN.
+- Conecta, mas não acessa serviços específicos.
+- Conexão lenta.
+
+## Passos
+
+1. Confirmar internet do técnico.
+2. Confirmar link local da Tekz.
+3. Validar porta UDP `1194`.
+4. Verificar serviço OpenVPN no OPNsense.
+5. Conferir logs do OpenVPN.
+6. Validar certificado/usuário.
+7. Verificar se recebeu IP `10.20.30.0/24`.
+8. Testar ping para `172.16.0.1`.
+9. Testar acesso ao serviço desejado.
+10. Verificar regras da interface OpenVPN.
+
+---
+
+# Procedimento: queda geral da infraestrutura local
+
+## Ordem sugerida de validação
+
+1. Energia/nobreak, se aplicável.
+2. Link de internet.
+3. OPNsense.
+4. LAN principal.
+5. Proxmox.
+6. VM `services`.
+7. Traefik.
+8. PostgreSQL.
+9. Redis.
+10. Chatwoot.
+11. n8n.
+12. Evolution Go.
+13. Univention.
+14. UniFi Auto.
+15. Nextcloud.
+16. Automation.
+
+## Checklist
+
+- O firewall responde?
+- O Proxmox responde?
+- As VMs estão ligadas?
+- A VM `services` subiu?
+- Docker está ativo?
+- Traefik está ativo?
+- Banco e Redis estão ativos?
+- Serviços públicos voltaram?
+- VPN voltou?
+- Monitoramento voltou?
+
+---
+
+# Procedimento: revisar serviço legado
+
+## Serviços legados conhecidos
+
+- Elastic em `172.16.0.152:9200`;
+- n8n legado;
+- Evolution API antiga;
+- Chatwoot legado;
+- Docmost antigo;
+- Uptime Kuma local inativo;
+- proxies temporários.
+
+## Passos
+
+1. Identificar serviço.
+2. Confirmar se ainda há acesso recente.
+3. Verificar se existe DNS apontando.
+4. Verificar se existe NAT.
+5. Verificar se existe integração no n8n.
+6. Verificar se existe dependência no Chatwoot.
+7. Fazer backup do compose/configuração.
+8. Marcar como inativo.
+9. Após período de segurança, remover.
+10. Registrar alteração.
+
+---
+
+# Procedimento: registrar incidente
+
+Use este modelo sempre que houver falha relevante.
+
+```text
+Data:
+Serviço afetado:
+Impacto:
+Sintoma:
+Causa provável:
+Causa confirmada:
+Ação aplicada:
+Responsável:
+Tempo de indisponibilidade:
+Pendências:
+Observações:
+```
+
+## Exemplos de incidentes que devem ser registrados
+
+- queda do Chatwoot;
+- falha de DNS;
+- falha no Traefik;
+- queda da VM `services`;
+- falha no Proxmox;
+- problema no OPNsense;
+- falha de VPN;
+- perda de volume Docker;
+- erro no PostgreSQL;
+- problema em atualização de stack;
+- falha de backup;
+- indisponibilidade do Uptime Kuma;
+- queda do link local da Tekz.
+
+## Boas práticas
+
+- Não alterar sem registrar o estado atual.
+- Evitar mudanças críticas sem backup.
+- Testar após cada alteração.
+- Documentar domínio, IP e stack afetados.
+- Preferir acesso via VPN para serviços sensíveis.
+- Manter DNS, Traefik e Portainer sincronizados na documentação.
+- Registrar serviços legados antes de remover.
+- Atualizar a documentação após mudanças.
+
+## Observações
+
+<Note>
+  Esta página deve evoluir conforme novos procedimentos forem executados. Sempre que um atendimento interno gerar uma sequência útil, transformar essa sequência em procedimento documentado.
+</Note>
+
+```text
+```
