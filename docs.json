@@ -24,6 +24,33 @@
         ]
       },
       {
+        "group": "Infraestrutura Tekz",
+        "icon": "network-wired",
+        "pages": [
+          "infra-tekz/index",
+          "infra-tekz/resumo",
+          "infra-tekz/topologia",
+          "infra-tekz/rede",
+          "infra-tekz/firewall",
+          "infra-tekz/vpn",
+          "infra-tekz/proxmox",
+          "infra-tekz/vms",
+          "infra-tekz/services",
+          "infra-tekz/portainer",
+          "infra-tekz/stacks",
+          "infra-tekz/traefik",
+          "infra-tekz/cloudflare",
+          "infra-tekz/oracle-cloud",
+          "infra-tekz/dns-publico",
+          "infra-tekz/servicos-publicos",
+          "infra-tekz/servicos-privados",
+          "infra-tekz/backups",
+          "infra-tekz/monitoramento",
+          "infra-tekz/procedimentos",
+          "infra-tekz/incidentes"
+        ]
+      },
+      {
         "group": "Infraestrutura de Clientes",
         "icon": "users",
         "pages": [
