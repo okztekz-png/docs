@@ -31,13 +31,9 @@ As VLANs possuem regras no firewall bloqueando a comunicação direta entre uma 
 | Rede | VLAN | Finalidade | Gateway | DHCP |
 | --- | --- | --- | --- | --- |
 | LAN | Sem VLAN / LAN principal | Rede principal interna | `172.16.0.1` | `172.16.0.100` até `172.16.0.200` |
-| Bancada | VLAN 100 | Rede de bancada / testes / equipamentos técnicos | A confirmar | `172.16.100.100` até `172.16.100.200` |
-| Rider | VLAN 11 | Rede Rider | A confirmar | `172.16.11.100` até `172.16.11.105` |
-| Visitantes | VLAN 10 | Rede Wi-Fi de visitantes | A confirmar | `172.16.10.100` até `172.16.10.200` |
-
-<Note>
-  Confirmar futuramente os IPs exatos de gateway das VLANs no OPNsense. O padrão provável é o firewall possuir um IP em cada rede, mas essa informação deve ser validada antes de registrar como definitivo.
-</Note>
+| Bancada | VLAN 100 | Rede de bancada / testes / equipamentos técnicos | 172.16.100.1 | `172.16.100.100` até `172.16.100.200` |
+| Rider | VLAN 11 | Rede Rider | 172.16.11.1 | `172.16.11.100` até `172.16.11.105` |
+| Visitantes | VLAN 10 | Rede Wi-Fi de visitantes | 172.16.10.1 | `172.16.10.100` até `172.16.10.200` |
 
 ## LAN principal
 
