@@ -217,7 +217,7 @@ Abaixo estão os principais redirecionamentos documentados no firewall.
 | WAN | TCP/UDP | `8443` | `172.16.0.250` | `8443` | UniFi Central |
 | WAN | TCP/UDP | `8080` | `172.16.0.250` | `8080` | UniFi Central / adoção |
 | WAN | TCP/UDP | `8081` | `172.16.0.152` | `8080` | Evolution API |
-| WAN | TCP | `8006` | `172.16.0.230` | `8006` | Proxmox |
+| WAN | TCP | `8006` | `172.16.0.230` | `8006` | Proxmox (regra desativada por segurança) |
 | WAN | TCP | `80` | `172.16.0.253` | `80` | Traefik / Services |
 | WAN | TCP | `8086` | `172.16.0.118` | `443` | Nextcloud |
 | WAN | TCP | `5678` | `172.16.0.152` | `5678` | n8n legado |
@@ -250,7 +250,7 @@ As portas abaixo merecem atenção especial por exporem serviços sensíveis ou 
 
 | Porta | Serviço | Risco / Atenção |
 | --- | --- | --- |
-| `8006` | Proxmox | Painel administrativo de virtualização |
+| `8006` | Proxmox | Painel administrativo de virtualização (regra desativada por segurança) |
 | `9200` | Elastic | Pode expor dados se não estiver protegido |
 | `5678` | n8n legado | Automação e integrações |
 | `8081` | Evolution API | API WhatsApp / integração |
