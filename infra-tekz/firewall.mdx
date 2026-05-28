@@ -1,3 +1,344 @@
 ---
-title: "firewall"
+title: "Firewall"
+description: "Documentação do firewall OPNsense da Tekz, incluindo LAN, VLANs, OpenVPN, NAT, portas expostas e regras de segurança."
+icon: "shield"
 ---
+
+## Visão geral
+
+O firewall principal da **Tekz Tecnologias** é um **OPNsense** virtualizado em um appliance VMware.
+
+Ele é o ponto central da rede interna e é responsável por:
+
+- gateway da LAN principal;
+- DHCP da LAN e VLANs;
+- roteamento interno;
+- isolamento entre redes;
+- regras de firewall;
+- redirecionamentos de porta;
+- publicação de serviços internos;
+- servidor OpenVPN para acesso externo seguro.
+
+## Equipamento
+
+| Item | Informação |
+| --- | --- |
+| Firewall | OPNsense |
+| IP LAN | `172.16.0.1` |
+| Ambiente | Appliance VMware dedicado |
+| Função | Gateway, DHCP, NAT, VPN, VLANs e regras de firewall |
+| Acesso administrativo | `https://172.16.0.1` |
+
+<Warning>
+  Não registrar senha, token, chave, certificado ou credenciais sensíveis nesta página. As credenciais devem ficar no cofre oficial da Tekz.
+</Warning>
+
+## Redes gerenciadas pelo firewall
+
+O OPNsense gerencia a LAN principal e as VLANs internas da Tekz.
+
+| Rede | VLAN | Finalidade | DHCP |
+| --- | --- | --- | --- |
+| LAN | Sem VLAN / LAN principal | Rede principal interna | `172.16.0.100` até `172.16.0.200` |
+| Bancada | VLAN 100 | Rede de bancada / testes | `172.16.100.100` até `172.16.100.200` |
+| Rider | VLAN 11 | Rede Rider | `172.16.11.100` até `172.16.11.105` |
+| Visitantes | VLAN 10 | Rede de visitantes | `172.16.10.100` até `172.16.10.200` |
+
+## LAN principal
+
+| Item | Informação |
+| --- | --- |
+| Rede | `172.16.0.0/24` |
+| Gateway | `172.16.0.1` |
+| DHCP | Ativo |
+| Faixa DHCP | `172.16.0.100` até `172.16.0.200` |
+
+A LAN principal concentra os servidores e serviços internos mais importantes da Tekz.
+
+## Principais hosts na LAN
+
+| Host / Serviço | IP | Função |
+| --- | --- | --- |
+| OPNsense | `172.16.0.1` | Firewall e gateway |
+| Proxmox | `172.16.0.230` | Host de virtualização |
+| Automation | `172.16.0.152` | Serviços legados, automações e Elastic |
+| Nextcloud | `172.16.0.118` | VM Ubuntu com Nextcloud |
+| UniFi Auto | `172.16.0.250` | Controlador UniFi central |
+| Services | `172.16.0.253` | Docker, Portainer, Traefik e serviços |
+| Univention Server | `172.16.0.254` | UCS, arquivos locais e AD |
+
+## VLAN 100 — Bancada
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `100` |
+| Rede | `172.16.100.0/24` |
+| Finalidade | Bancada técnica, testes e equipamentos em manutenção |
+| DHCP | `172.16.100.100` até `172.16.100.200` |
+| Gateway | A confirmar |
+
+## VLAN 11 — Rider
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `11` |
+| Rede | `172.16.11.0/24` |
+| Finalidade | Rede Rider |
+| DHCP | `172.16.11.100` até `172.16.11.105` |
+| Gateway | A confirmar |
+
+## VLAN 10 — Visitantes
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `10` |
+| Rede | `172.16.10.0/24` |
+| Finalidade | Rede de visitantes |
+| DHCP | `172.16.10.100` até `172.16.10.200` |
+| Gateway | A confirmar |
+
+## Isolamento entre VLANs
+
+Todas as VLANs possuem regras no firewall bloqueando a comunicação direta entre uma rede e outra.
+
+Essa política reduz o risco de:
+
+- visitantes acessarem a rede interna;
+- equipamentos de bancada alcançarem servidores sem necessidade;
+- redes específicas acessarem serviços administrativos;
+- movimentação lateral entre redes em caso de incidente.
+
+## Política esperada entre redes
+
+| Origem | Destino | Status esperado |
+| --- | --- | --- |
+| LAN principal | Internet | Permitido |
+| VLAN 100 / Bancada | Internet | Permitido conforme regra |
+| VLAN 11 / Rider | Internet | Permitido conforme regra |
+| VLAN 10 / Visitantes | Internet | Permitido conforme regra |
+| VLAN 10 / Visitantes | LAN principal | Bloqueado |
+| VLAN 100 / Bancada | LAN principal | Bloqueado ou restrito |
+| VLAN 11 / Rider | LAN principal | Bloqueado ou restrito |
+| VLANs entre si | Outras VLANs | Bloqueado |
+
+<Warning>
+  Qualquer liberação entre VLANs deve ser feita com regra específica, informando origem, destino, porta, protocolo e justificativa.
+</Warning>
+
+## OpenVPN
+
+O OPNsense também executa o servidor **OpenVPN** usado pela Tekz para acesso externo à rede local.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | OpenVPN |
+| Protocolo | UDP |
+| Porta | `1194` |
+| Rede VPN | `10.20.30.0/24` |
+| Finalidade | Acesso externo seguro à rede interna da Tekz |
+
+## Uso da VPN
+
+A VPN deve ser utilizada para acessar serviços privados da infraestrutura interna, como:
+
+- OPNsense;
+- Proxmox;
+- Passbolt;
+- Services;
+- Univention Server;
+- Nextcloud interno;
+- VM Automation;
+- painéis e serviços não publicados publicamente.
+
+## Publicação de serviços
+
+A publicação principal dos serviços internos ocorre através de NAT no OPNsense, encaminhando as portas `80` e `443` para a VM `services`, onde o Traefik faz o roteamento por domínio.
+
+Fluxo padrão:
+
+```text
+Internet
+    ↓
+Cloudflare
+    ↓
+IP público local da Tekz
+    ↓
+OPNsense
+    ↓
+NAT 80/443
+    ↓
+VM services - 172.16.0.253
+    ↓
+Traefik
+    ↓
+Container / serviço correspondente
+```
+
+## Entrada pública principal
+
+| Item | Informação |
+| --- | --- |
+| IP público local | `179.51.153.51` |
+| Registro principal | `managerncst.tekz.com.br` |
+| Destino interno padrão | `172.16.0.253` |
+| Serviço interno | Traefik |
+| Portas principais | `80` e `443` |
+
+## Regras administrativas locais
+
+As regras abaixo aparecem na LAN para acesso administrativo ao próprio firewall.
+
+| Interface | Protocolo | Destino | Porta | Descrição |
+| --- | --- | --- | --- | --- |
+| LAN | TCP | LAN address | `443` | Anti-Lockout Rule |
+| LAN | TCP | LAN address | `80` | Anti-Lockout Rule |
+| LAN | TCP | LAN address | `22` | Anti-Lockout Rule |
+
+<Note>
+  As regras Anti-Lockout evitam perda de acesso administrativo ao firewall pela LAN.
+</Note>
+
+## Redirecionamento DNS interno
+
+Existe uma regra na LAN para redirecionar tráfego DNS.
+
+| Interface | Protocolo | Porta | Destino interno | Descrição |
+| --- | --- | --- | --- | --- |
+| LAN | TCP/UDP | `53` | `172.16.0.153` | Redirecionar tráfego DNS para Unbound DNS no Firewall |
+
+<Warning>
+  Validar posteriormente se o destino `172.16.0.153` ainda está correto, pois o firewall principal documentado é `172.16.0.1`.
+</Warning>
+
+## NATs e portas publicadas
+
+Abaixo estão os principais redirecionamentos documentados no firewall.
+
+| Interface | Protocolo | Porta externa | Destino interno | Porta interna | Serviço / Observação |
+| --- | --- | --- | --- | --- | --- |
+| WAN | TCP/UDP | `9200` | `172.16.0.152` | `9200` | Elastic |
+| WAN | TCP/UDP | `443` | `172.16.0.253` | `443` | Traefik / Services |
+| WAN | TCP/UDP | `8443` | `172.16.0.250` | `8443` | UniFi Central |
+| WAN | TCP/UDP | `8080` | `172.16.0.250` | `8080` | UniFi Central / adoção |
+| WAN | TCP/UDP | `8081` | `172.16.0.152` | `8080` | Evolution API |
+| WAN | TCP | `8006` | `172.16.0.230` | `8006` | Proxmox |
+| WAN | TCP | `80` | `172.16.0.253` | `80` | Traefik / Services |
+| WAN | TCP | `8086` | `172.16.0.118` | `443` | Nextcloud |
+| WAN | TCP | `5678` | `172.16.0.152` | `5678` | n8n legado |
+| WAN | TCP | `8085` | `172.16.0.152` | `3000` | Chatwoot legado |
+| WAN | TCP/UDP | `8899` | `172.16.0.231` | `8000` | Gerador `.exe` agente HelpTekz |
+| LAN | TCP | `85` | `172.16.0.152` | `85` | Relatório Tekz / gerador local |
+
+## Serviços publicados por NAT direto
+
+Alguns serviços ainda são expostos diretamente por NAT para VMs específicas, fora do fluxo padrão via Traefik.
+
+| Serviço | IP interno | Observação |
+| --- | --- | --- |
+| Elastic | `172.16.0.152` | Serviço legado / coleta de dados |
+| n8n legado | `172.16.0.152` | Serviço antigo |
+| Evolution API legado | `172.16.0.152` | Serviço antigo |
+| Chatwoot legado | `172.16.0.152` | Serviço antigo |
+| Proxmox | `172.16.0.230` | Acesso administrativo sensível |
+| Nextcloud | `172.16.0.118` | Publicado via porta externa `8086` |
+| UniFi Central | `172.16.0.250` | Porta de gestão e adoção |
+| HelpTekz Agent Generator | `172.16.0.231` | Gerador de `.exe` do agente |
+
+<Warning>
+  Revisar periodicamente todos os NATs diretos, principalmente os que expõem serviços administrativos ou legados.
+</Warning>
+
+## Portas críticas expostas
+
+As portas abaixo merecem atenção especial por exporem serviços sensíveis ou administrativos.
+
+| Porta | Serviço | Risco / Atenção |
+| --- | --- | --- |
+| `8006` | Proxmox | Painel administrativo de virtualização |
+| `9200` | Elastic | Pode expor dados se não estiver protegido |
+| `5678` | n8n legado | Automação e integrações |
+| `8081` | Evolution API | API WhatsApp / integração |
+| `8085` | Chatwoot legado | Serviço antigo |
+| `8443` | UniFi Controller | Painel UniFi / adoção |
+| `8080` | UniFi adoção | Necessário para adoção de equipamentos |
+| `8899` | Gerador HelpTekz | Geração de instalador/agente |
+
+## Recomendações de segurança
+
+- Priorizar publicação de serviços via Traefik.
+- Evitar exposição direta de painéis administrativos na WAN.
+- Revisar NATs antigos da VM `automation`.
+- Validar se Elastic precisa continuar exposto.
+- Validar se n8n legado ainda é necessário.
+- Validar se Evolution API antigo ainda é necessário.
+- Restringir serviços administrativos por VPN sempre que possível.
+- Manter regras com descrição clara.
+- Registrar alterações relevantes em `infra-tekz/incidentes`.
+- Fazer backup da configuração do OPNsense antes de alterações importantes.
+
+## Checklist antes de alterar regras
+
+Antes de alterar NAT, firewall, VLAN ou VPN:
+
+- confirmar serviço afetado;
+- confirmar IP interno correto;
+- confirmar porta interna e externa;
+- verificar se existe dependência em Cloudflare ou Nginx Proxy Manager;
+- validar se o serviço está em produção ou legado;
+- registrar configuração atual;
+- planejar rollback;
+- testar após alteração.
+
+## Checklist de troubleshooting
+
+### Serviço público fora do ar
+
+1. Verificar se o domínio resolve corretamente no Cloudflare.
+2. Confirmar se o registro aponta para `managerncst.tekz.com.br` ou IP correto.
+3. Validar se o IP público local está acessível.
+4. Verificar NAT no OPNsense.
+5. Validar se a VM de destino está online.
+6. Validar se o Traefik está rodando, quando aplicável.
+7. Validar se o container/serviço está ativo.
+8. Conferir logs do Traefik, Portainer ou aplicação.
+
+### VPN sem conectar
+
+1. Confirmar se o link local da Tekz está ativo.
+2. Verificar se a porta UDP `1194` está acessível.
+3. Validar status do servidor OpenVPN no OPNsense.
+4. Verificar certificado/configuração do usuário.
+5. Conferir logs do OpenVPN.
+6. Testar acesso à rede `10.20.30.0/24`.
+7. Testar ping para serviços internos permitidos.
+
+### VLAN sem internet
+
+1. Confirmar DHCP da VLAN.
+2. Confirmar gateway da VLAN.
+3. Verificar regra de firewall permitindo saída para internet.
+4. Validar NAT de saída, se aplicável.
+5. Testar DNS.
+6. Testar rota para internet.
+7. Conferir se a VLAN está chegando corretamente no switch/AP.
+
+## Pontos a confirmar
+
+- Interfaces físicas/virtuais exatas associadas à LAN e VLANs.
+- Gateway exato de cada VLAN.
+- Status atual da regra DNS para `172.16.0.153`.
+- Se todos os NATs legados ainda estão em uso.
+- Se o Proxmox deve continuar exposto pela WAN.
+- Se o Elastic deve continuar exposto pela WAN.
+- Se n8n, Evolution e Chatwoot legados devem ser removidos ou migrados.
+- Se o acesso administrativo deve ser limitado exclusivamente por VPN.
+- Se há backup atualizado da configuração do OPNsense.
+
+## Observações
+
+<Note>
+  O firewall OPNsense é um dos componentes mais críticos da infraestrutura interna da Tekz. Alterações incorretas podem impactar internet, VPN, publicação de serviços, VLANs, acesso remoto e operação dos sistemas internos.
+</Note>
+
+```text
+```
