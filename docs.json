@@ -162,11 +162,17 @@
         "icon": "cloud",
         "pages": [
           "hospedagem/index",
-          "hospedagem/servidores",
-          "hospedagem/proxmox",
-          "hospedagem/cloudflare",
-          "hospedagem/backups",
-          "hospedagem/monitoramento"
+          {
+            "group": "Ambiente de Hospedagem",
+            "icon": "server",
+            "pages": [
+              "hospedagem/servidores",
+              "hospedagem/proxmox",
+              "hospedagem/cloudflare",
+              "hospedagem/backups",
+              "hospedagem/monitoramento"
+            ]
+          }
         ]
       },
       {
@@ -174,11 +180,17 @@
         "icon": "book",
         "pages": [
           "playbooks/index",
-          "playbooks/novo-cliente",
-          "playbooks/troca-firewall",
-          "playbooks/queda-internet",
-          "playbooks/restaurar-backup",
-          "playbooks/onboarding-usuario"
+          {
+            "group": "Procedimentos",
+            "icon": "list-check",
+            "pages": [
+              "playbooks/novo-cliente",
+              "playbooks/troca-firewall",
+              "playbooks/queda-internet",
+              "playbooks/restaurar-backup",
+              "playbooks/onboarding-usuario"
+            ]
+          }
         ]
       }
     ]
