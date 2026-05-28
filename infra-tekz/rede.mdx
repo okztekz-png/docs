@@ -1,3 +1,282 @@
 ---
-title: "rede"
+title: "Rede"
+description: "Documentação da rede local, LAN, VLANs, DHCP, isolamento e segmentação da infraestrutura interna da Tekz."
+icon: "ethernet"
 ---
+
+## Visão geral
+
+A rede interna da **Tekz Tecnologias** é centralizada no firewall **OPNsense**, que atua como gateway principal, servidor DHCP, roteador entre redes, firewall e servidor OpenVPN.
+
+O ambiente possui uma LAN principal e três VLANs documentadas:
+
+- **LAN** → rede principal interna;
+- **VLAN 100** → bancada;
+- **VLAN 11** → Rider;
+- **VLAN 10** → visitantes.
+
+As VLANs possuem regras no firewall bloqueando a comunicação direta entre uma rede e outra, aumentando o isolamento e reduzindo riscos de acesso indevido entre ambientes.
+
+## Firewall principal
+
+| Item | Informação |
+| --- | --- |
+| Equipamento | OPNsense |
+| IP LAN | `172.16.0.1` |
+| Função | Gateway, DHCP, firewall, NAT, VLANs e OpenVPN |
+| Ambiente | Appliance virtualizado em VMware |
+
+## Redes internas
+
+| Rede | VLAN | Finalidade | Gateway | DHCP |
+| --- | --- | --- | --- | --- |
+| LAN | Sem VLAN / LAN principal | Rede principal interna | `172.16.0.1` | `172.16.0.100` até `172.16.0.200` |
+| Bancada | VLAN 100 | Rede de bancada / testes / equipamentos técnicos | A confirmar | `172.16.100.100` até `172.16.100.200` |
+| Rider | VLAN 11 | Rede Rider | A confirmar | `172.16.11.100` até `172.16.11.105` |
+| Visitantes | VLAN 10 | Rede Wi-Fi de visitantes | A confirmar | `172.16.10.100` até `172.16.10.200` |
+
+<Note>
+  Confirmar futuramente os IPs exatos de gateway das VLANs no OPNsense. O padrão provável é o firewall possuir um IP em cada rede, mas essa informação deve ser validada antes de registrar como definitivo.
+</Note>
+
+## LAN principal
+
+A LAN principal utiliza a rede:
+
+```text
+172.16.0.0/24
+```
+
+O gateway principal é:
+
+```text
+172.16.0.1
+```
+
+A faixa DHCP configurada é:
+
+```text
+172.16.0.100 - 172.16.0.200
+```
+
+Esta rede concentra os principais servidores e serviços internos da Tekz.
+
+## Principais equipamentos na LAN
+
+| Equipamento / Serviço | IP | Função |
+| --- | --- | --- |
+| OPNsense | `172.16.0.1` | Gateway, firewall, DHCP, NAT e VPN |
+| Proxmox | `172.16.0.230` | Host de virtualização principal |
+| Automation | `172.16.0.152` | Serviços legados, automações, Elastic e integrações antigas |
+| Nextcloud | `172.16.0.118` | VM Ubuntu com Nextcloud |
+| Univention Server | `172.16.0.254` | UCS, arquivos locais e AD |
+| UniFi Auto | `172.16.0.250` | Controlador UniFi central |
+| Services | `172.16.0.253` | Docker, Portainer, Traefik e serviços em containers |
+
+## VLAN 100 — Bancada
+
+A VLAN 100 é destinada à rede de bancada.
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `100` |
+| Nome | Bancada |
+| Rede | `172.16.100.0/24` |
+| DHCP | `172.16.100.100` até `172.16.100.200` |
+| Gateway | A confirmar |
+| Finalidade | Testes, bancada técnica e equipamentos em manutenção |
+
+## VLAN 11 — Rider
+
+A VLAN 11 é destinada à rede Rider.
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `11` |
+| Nome | Rider |
+| Rede | `172.16.11.0/24` |
+| DHCP | `172.16.11.100` até `172.16.11.105` |
+| Gateway | A confirmar |
+| Finalidade | Rede específica Rider |
+
+## VLAN 10 — Visitantes
+
+A VLAN 10 é destinada à rede de visitantes.
+
+| Item | Informação |
+| --- | --- |
+| VLAN | `10` |
+| Nome | Visitantes |
+| Rede | `172.16.10.0/24` |
+| DHCP | `172.16.10.100` até `172.16.10.200` |
+| Gateway | A confirmar |
+| Finalidade | Wi-Fi de visitantes |
+
+## Isolamento entre redes
+
+Todas as VLANs possuem regras no firewall para bloquear a comunicação direta entre elas.
+
+Esse isolamento ajuda a proteger:
+
+- servidores internos;
+- ambiente de produção;
+- serviços administrativos;
+- rede principal da Tekz;
+- dispositivos de visitantes;
+- equipamentos em teste na bancada.
+
+## Política geral de comunicação
+
+| Origem | Destino | Status esperado |
+| --- | --- | --- |
+| LAN principal | Internet | Permitido |
+| VLAN 100 / Bancada | Internet | Permitido, conforme regra |
+| VLAN 11 / Rider | Internet | Permitido, conforme regra |
+| VLAN 10 / Visitantes | Internet | Permitido, conforme regra |
+| VLAN 10 / Visitantes | LAN principal | Bloqueado |
+| VLAN 100 / Bancada | LAN principal | Bloqueado ou restrito, conforme necessidade |
+| VLAN 11 / Rider | LAN principal | Bloqueado ou restrito, conforme necessidade |
+| VLAN entre si | Outras VLANs | Bloqueado |
+
+<Warning>
+  Antes de liberar comunicação entre VLANs, validar a necessidade real, origem, destino, porta, serviço e impacto de segurança.
+</Warning>
+
+## OpenVPN
+
+O acesso remoto à rede interna da Tekz é realizado por meio de um servidor **OpenVPN** configurado no firewall OPNsense.
+
+| Item | Informação |
+| --- | --- |
+| Serviço | OpenVPN |
+| Protocolo | UDP |
+| Porta | `1194` |
+| Rede VPN | `10.20.30.0/24` |
+| Finalidade | Acesso externo seguro à rede local da empresa |
+
+## Rede VPN
+
+A rede do OpenVPN é:
+
+```text
+10.20.30.0/24
+```
+
+Essa rede é usada para clientes VPN conectados remotamente.
+
+## Publicação de serviços pela rede local
+
+A maior parte dos serviços publicados na web segue o seguinte caminho:
+
+```text
+Internet
+    ↓
+Cloudflare
+    ↓
+IP público local da Tekz
+    ↓
+OPNsense
+    ↓
+NAT 80/443
+    ↓
+VM services - 172.16.0.253
+    ↓
+Traefik
+    ↓
+Container correspondente
+```
+
+## Entrada pública principal
+
+| Item | Informação |
+| --- | --- |
+| Registro principal | `managerncst.tekz.com.br` |
+| IP público local | `179.51.153.51` |
+| Destino interno principal | `172.16.0.253` |
+| Serviço de destino | Traefik |
+| Portas principais | `80` e `443` |
+
+## NATs e serviços expostos
+
+Alguns serviços são publicados por NAT direto no OPNsense.
+
+| Serviço | Porta externa | Destino interno | Porta interna | Observação |
+| --- | --- | --- | --- | --- |
+| Traefik HTTP | `80` | `172.16.0.253` | `80` | Publicação dos serviços via Traefik |
+| Traefik HTTPS | `443` | `172.16.0.253` | `443` | Publicação dos serviços via Traefik |
+| Proxmox | `8006` | `172.16.0.230` | `8006` | Acesso web ao Proxmox |
+| UniFi HTTPS | `8443` | `172.16.0.250` | `8443` | UniFi Controller |
+| UniFi adoção | `8080` | `172.16.0.250` | `8080` | Adoção UniFi |
+| Nextcloud | `8086` | `172.16.0.118` | `443` | Acesso Nextcloud |
+| Elastic | `9200` | `172.16.0.152` | `9200` | Elastic legado |
+| n8n legado | `5678` | `172.16.0.152` | `5678` | n8n legado |
+| Chatwoot legado | `8085` | `172.16.0.152` | `3000` | Chatwoot antigo |
+| Evolution API legado | `8081` | `172.16.0.152` | `8080` | Evolution API antigo |
+| Gerador HelpTekz | `8899` | `172.16.0.231` | `8000` | Gerador `.exe` agente HelpTekz |
+
+<Warning>
+  Alguns NATs apontam para serviços legados ou antigos. Revisar periodicamente quais portas ainda precisam permanecer expostas.
+</Warning>
+
+## DNS interno
+
+Na LAN existe uma regra redirecionando tráfego DNS para o Unbound DNS do firewall.
+
+| Origem | Porta | Destino | Observação |
+| --- | --- | --- | --- |
+| LAN | `53` | `172.16.0.153` | Redirecionar tráfego DNS para Unbound DNS no firewall |
+
+<Note>
+  Validar posteriormente se o destino `172.16.0.153` ainda é o correto para a regra de DNS interno, pois o firewall principal documentado está em `172.16.0.1`.
+</Note>
+
+## Serviços internos importantes
+
+| Serviço | IP | Rede |
+| --- | --- | --- |
+| Proxmox | `172.16.0.230` | LAN |
+| Services / Docker | `172.16.0.253` | LAN |
+| Passbolt | `172.16.0.253:8443` | LAN / VPN |
+| Univention / AD | `172.16.0.254` | LAN |
+| UniFi Controller | `172.16.0.250` | LAN |
+| Nextcloud | `172.16.0.118` | LAN |
+| Automation | `172.16.0.152` | LAN |
+
+## Serviços privados
+
+Serviços privados devem ser acessados apenas pela LAN ou via VPN.
+
+Exemplos:
+
+| Serviço | Acesso |
+| --- | --- |
+| Passbolt | `https://172.16.0.253:8443` |
+| Proxmox | `https://172.16.0.230:8006` |
+| OPNsense | `https://172.16.0.1` |
+| UCS | `172.16.0.254` |
+| Automation | `172.16.0.152` |
+
+## Recomendações
+
+- Manter a VLAN de visitantes isolada da LAN principal.
+- Evitar liberar acesso entre VLANs sem regra específica.
+- Revisar NATs legados periodicamente.
+- Priorizar publicação via Traefik quando possível.
+- Evitar publicação direta de serviços administrativos sensíveis.
+- Documentar toda alteração em VLAN, NAT, DNS ou firewall.
+- Validar se os serviços antigos da VM `automation` ainda são necessários.
+- Manter acesso administrativo preferencialmente por VPN.
+
+## Pontos a confirmar
+
+- Gateway exato de cada VLAN no OPNsense.
+- Interfaces físicas ou virtuais associadas a cada VLAN.
+- Switches envolvidos na distribuição das VLANs.
+- Portas trunk e access da rede interna.
+- Se todas as VLANs estão sendo entregues nos APs.
+- Se a regra DNS para `172.16.0.153` ainda está correta.
+- Quais NATs legados ainda estão em produção.
+- Quais serviços devem ser migrados para Traefik.
+
+```text
+```
