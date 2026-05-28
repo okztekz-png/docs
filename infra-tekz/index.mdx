@@ -1,3 +1,142 @@
 ---
-title: "index"
+title: "Infraestrutura Tekz"
+description: "Documentação da infraestrutura interna da Tekz Tecnologias: rede, firewall, Proxmox, VMs, Docker, Portainer, Traefik, Cloudflare, VPN, serviços e operação."
+icon: "network-wired"
+sidebarTitle: "Visão geral"
 ---
+
+## Infraestrutura interna da Tekz
+
+Esta seção reúne a documentação técnica da infraestrutura interna da **Tekz Tecnologias**.
+
+Aqui ficam centralizadas as informações sobre rede local, firewall, VLANs, VPN, Proxmox, máquinas virtuais, Portainer, Docker Swarm, Traefik, Cloudflare, Oracle Cloud, serviços publicados, serviços privados, monitoramento e rotinas operacionais.
+
+<Warning>
+  Esta documentação contém informações sensíveis da infraestrutura interna da Tekz. Não compartilhe links, prints ou dados técnicos fora dos canais autorizados.
+</Warning>
+
+## Visão geral do ambiente
+
+A infraestrutura interna da Tekz é composta por uma rede local segmentada por VLANs, firewall OPNsense, servidor Proxmox, máquinas virtuais internas e uma VM dedicada a serviços Docker.
+
+Parte dos serviços internos roda localmente na rede da empresa e é publicada na web através de **Traefik \+ Cloudflare**, usando o domínio `tekz.com.br`.
+
+Além disso, alguns serviços auxiliares rodam em ambiente externo na **Oracle Cloud**, como o Uptime Kuma e o Nginx Proxy Manager.
+
+## Principais componentes
+
+<CardGroup cols={2}>
+  <Card title="Resumo" icon="file-text" href="/infra-tekz/resumo">
+    Visão geral da infraestrutura interna da Tekz, principais servidores, serviços e dependências.
+  </Card>
+
+  <Card title="Topologia" icon="network-wired" href="/infra-tekz/topologia">
+    Fluxo lógico da rede: internet, firewall, VLANs, Proxmox, VMs, Traefik, Cloudflare e Oracle Cloud.
+  </Card>
+
+  <Card title="Rede" icon="ethernet" href="/infra-tekz/rede">
+    LAN, VLANs, faixas DHCP, isolamento entre redes e segmentação interna.
+  </Card>
+
+  <Card title="Firewall" icon="shield" href="/infra-tekz/firewall">
+    OPNsense, regras, NAT, portas publicadas, OpenVPN e encaminhamentos.
+  </Card>
+
+  <Card title="VPN" icon="lock" href="/infra-tekz/vpn">
+    Servidor OpenVPN usado para acesso externo seguro à rede local da Tekz.
+  </Card>
+
+  <Card title="Proxmox" icon="server" href="/infra-tekz/proxmox">
+    Host Proxmox principal da Tekz e estrutura de virtualização local.
+  </Card>
+
+  <Card title="VMs" icon="boxes" href="/infra-tekz/vms">
+    Máquinas virtuais internas: automation, Nextcloud, Univention, UniFi Auto e Services.
+  </Card>
+
+  <Card title="Services" icon="container" href="/infra-tekz/services">
+    VM responsável por Portainer, Docker Swarm, Traefik e serviços internos em containers.
+  </Card>
+
+  <Card title="Portainer" icon="ship" href="/infra-tekz/portainer">
+    Painel de gerenciamento dos containers, stacks e serviços Docker da Tekz.
+  </Card>
+
+  <Card title="Stacks" icon="layer-group" href="/infra-tekz/stacks">
+    Lista de stacks do Portainer, status, finalidade e observações operacionais.
+  </Card>
+
+  <Card title="Traefik" icon="route" href="/infra-tekz/traefik">
+    Proxy reverso local responsável por publicar serviços Docker via HTTP/HTTPS.
+  </Card>
+
+  <Card title="Cloudflare" icon="cloud" href="/infra-tekz/cloudflare">
+    DNS público, CNAMEs, registros A e estratégia de publicação dos serviços.
+  </Card>
+
+  <Card title="Oracle Cloud" icon="cloud-cog" href="/infra-tekz/oracle-cloud">
+    Serviços externos hospedados na Oracle Cloud, como Nginx Proxy Manager e Uptime Kuma.
+  </Card>
+
+  <Card title="DNS Público" icon="globe" href="/infra-tekz/dns-publico">
+    Domínios, subdomínios e apontamentos usados para publicar serviços da Tekz.
+  </Card>
+
+  <Card title="Serviços Públicos" icon="earth" href="/infra-tekz/servicos-publicos">
+    Serviços acessíveis via internet, como Chatwoot, n8n, Dify, Portainer, Evolution e relatórios.
+  </Card>
+
+  <Card title="Serviços Privados" icon="key" href="/infra-tekz/servicos-privados">
+    Serviços acessíveis apenas pela rede local ou VPN, como Passbolt e painéis internos.
+  </Card>
+
+  <Card title="Backups" icon="database-backup" href="/infra-tekz/backups">
+    Estratégia de backup para VMs, containers, bancos, arquivos, configurações e serviços críticos.
+  </Card>
+
+  <Card title="Monitoramento" icon="chart-line" href="/infra-tekz/monitoramento">
+    Uptime Kuma, NOC-TV, monitoramento de serviços, links e disponibilidade.
+  </Card>
+
+  <Card title="Procedimentos" icon="book" href="/infra-tekz/procedimentos">
+    Rotinas de operação, validação, publicação de serviços, acesso VPN e troubleshooting.
+  </Card>
+
+  <Card title="Incidentes" icon="triangle-alert" href="/infra-tekz/incidentes">
+    Histórico de incidentes, alterações relevantes e registros operacionais.
+  </Card>
+</CardGroup>
+
+## Mapa rápido
+
+| Área | Principal referência |
+| --- | --- |
+| Firewall | `172.16.0.1` |
+| Proxmox | `172.16.0.230:8006` |
+| Services / Docker | `172.16.0.253` |
+| Univention / AD | `172.16.0.254` |
+| UniFi Controller | `172.16.0.250` |
+| Nextcloud | `172.16.0.118` |
+| Automation | `172.16.0.152` |
+| OpenVPN | UDP `1194` |
+| Rede VPN | `10.20.30.0/24` |
+
+## Estratégia de publicação web
+
+A publicação dos serviços internos segue, em geral, este fluxo:
+
+```text
+Cloudflare
+    ↓
+managerncst.tekz.com.br
+    ↓
+IP público local da Tekz
+    ↓
+Firewall OPNsense
+    ↓
+NAT 80/443
+    ↓
+Traefik na VM Services
+    ↓
+Serviço Docker correspondente
+```
