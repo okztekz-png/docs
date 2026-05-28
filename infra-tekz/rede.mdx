@@ -220,11 +220,7 @@ Na LAN existe uma regra redirecionando tráfego DNS para o Unbound DNS do firewa
 
 | Origem | Porta | Destino | Observação |
 | --- | --- | --- | --- |
-| LAN | `53` | `172.16.0.153` | Redirecionar tráfego DNS para Unbound DNS no firewall |
-
-<Note>
-  Validar posteriormente se o destino `172.16.0.153` ainda é o correto para a regra de DNS interno, pois o firewall principal documentado está em `172.16.0.1`.
-</Note>
+| LAN | `53` | `172.16.0.15` | Redirecionar tráfego DNS para Unbound DNS no firewall |
 
 ## Serviços internos importantes
 
