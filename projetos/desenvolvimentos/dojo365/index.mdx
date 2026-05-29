@@ -5,4 +5,35 @@ icon: "graduation-cap"
 sidebarTitle: "Visão geral"
 ---
 
-Documentação técnica do **Dojo365**.
+O **Dojo 365** é um SaaS para academias de artes marciais, com:
+
+- **Painel do gestor (web)** para operação do dia a dia.
+- **App do aluno/responsáveis** (Expo/React Native Web) para acesso e acompanhamento.
+- **Backend no Supabase** (Auth + Postgres + Storage + Edge Functions).
+
+Use esta seção para entender a arquitetura, ambientes, deploy e URLs oficiais do produto.
+
+## O que o produto resolve
+
+- Cadastro e gestão de **alunos**, **famílias** (titular financeiro, dependentes e responsáveis) e **vínculos**.
+- Gestão de **turmas**, matrículas e rotinas do treino.
+- Controle de **presença/chamadas** e relatórios por período.
+- Controle de **faixas e graus** com **auditoria** por modalidade.
+- Fluxo de **auto-cadastro** via link público (inscrição guiada).
+- **Canais de atendimento** no app do aluno (ex.: WhatsApp da academia).
+
+## Componentes principais
+
+- **Gestor (Manager)**: aplicação web em `src/app/` (HTML + JavaScript + Tailwind).
+- **Aluno (Student app)**: aplicação em `src/modulo-aluno/app-simples/app-aluno/` (Expo Router).
+- **Supabase**:
+  - Postgres (tabelas, RPCs e regras),
+  - Edge Functions em `supabase/functions/`,
+  - autenticação com fluxos de invite/welcome e recovery.
+
+## Onde começar
+
+- Leia **Arquitetura** para entender componentes e fluxos.
+- Leia **Ambientes** para configurar variáveis e segredos.
+- Leia **Deploy** para publicar em produção.
+- Use **URLs** como referência de endpoints por ambiente.

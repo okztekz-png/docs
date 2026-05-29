@@ -3,4 +3,59 @@ title: "Ambientes"
 description: "Ambientes do Dojo365."
 ---
 
-Descrição dos ambientes, URLs, variáveis e segredos.
+Você usa o Dojo 365 em três ambientes.
+Você replica a mesma arquitetura (Manager + app do aluno + Supabase), mas troca URLs e variáveis.
+
+## produção
+
+- Manager (web): `https://app.dojo365.com.br/src/app/app.html`
+- App do aluno (web): `https://aluno.dojo365.com.br`
+- Supabase (backend): `https://goeizfxucfuyoncqrtey.supabase.co`
+
+Você acessa links públicos de auto-cadastro pelo domínio do Manager.
+Você usa:
+
+- `https://app.dojo365.com.br/join/<slug>`
+- `https://app.dojo365.com.br/link/<slug>`
+
+Essas rotas são reescritas para `src/app/auto-cadastro-publico.html` no deploy do Manager.
+
+## staging
+
+Se você tiver um ambiente de staging, você mantém a mesma estrutura de URLs.
+Você costuma variar só o domínio.
+
+- Manager: `https://<staging-domain>/src/app/app.html`
+- App do aluno: `https://<staging-student-domain>`
+- Supabase: um segundo projeto (recomendado) ou um schema isolado
+
+Você evita apontar staging para o mesmo banco da produção.
+
+## desenvolvimento local
+
+Você pode rodar o Manager e o app do aluno separadamente.
+
+- Manager (local): normalmente via `window.location.origin`
+- App do aluno (local): `http://localhost:8081` (padrão no código)
+
+O Manager resolve a URL base pelo navegador.
+Você encontra isso em `src/lib/app-url.js`.
+
+## variáveis e segredos
+
+Você centraliza as URLs de backend e front-end em `src/lib/env.js`.
+Você usa estas chaves:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `APP_BASE_URL`
+- `STUDENT_APP_BASE_URL`
+
+Você trata `SUPABASE_ANON_KEY` como credencial de ambiente.
+Você não publica chaves reais em documentação nem em repositórios públicos.
+
+## dicas práticas
+
+- Você valida redirecionamentos do Supabase para o Manager e para o app do aluno.
+- Você testa fluxos de e-mail (invite, recovery) com URLs absolutas por ambiente.
+- Você confirma que rotas públicas (`/join/*` e `/link/*`) continuam funcionando após mudanças em `vercel.json`.

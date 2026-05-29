@@ -3,4 +3,78 @@ title: "Deploy"
 description: "Processo de deploy do Dojo365."
 ---
 
-Pipeline de CI/CD, branches, comandos e rollback.
+Você faz deploy de três partes:
+
+- Manager (web)
+- App do aluno (web)
+- Supabase (banco, RPCs e Edge Functions)
+
+## Manager (web)
+
+O Manager é um app web estático.
+Ele vive em `src/app/` e é servido a partir de `src/app/app.html`.
+
+No deploy, você mantém estas regras:
+
+- `/` redireciona para `/src/app/app.html`
+- `/join/<slug>` e `/link/<slug>` reescrevem para `src/app/auto-cadastro-publico.html`
+
+Você encontra isso em `vercel.json`.
+
+### fluxo sugerido
+
+1. Você abre um PR com a mudança.
+2. Você valida no preview do Vercel.
+3. Você mergeia no branch principal.
+4. Você valida URLs públicas (`/join/*` e `/link/*`) após o deploy.
+
+## app do aluno (web)
+
+O app do aluno é um app Expo (React Native Web).
+Ele vive em `src/modulo-aluno/app-simples/app-aluno/`.
+
+Você valida a build web antes de publicar.
+Você garante que rotas de login, recuperação e welcome funcionam com links do Supabase.
+
+## Supabase
+
+O Supabase é o backend.
+Ele hospeda:
+
+- Auth (links de invite e recovery)
+- Postgres (tabelas, views e RPCs)
+- Edge Functions (operações com regras de negócio)
+
+### migrations
+
+Você versiona migrations em `supabase/migrations/`.
+Você aplica migrations em ordem.
+Você evita rodar scripts manuais em produção sem registro.
+
+### Edge Functions
+
+As funções ficam em `supabase/functions/<nome>/index.ts`.
+Algumas funções importantes:
+
+- `update-academy-company` (dados da empresa e `support_whatsapp`)
+- `resolve-self-registration-link` (valida e resolve `join/link`)
+- `submit-self-registration` (submete auto-cadastro)
+- `toggle-student-app-login` (habilita/desabilita acesso do aluno)
+
+Você faz deploy das funções com o Supabase CLI.
+Exemplos:
+
+```bash
+supabase functions deploy update-academy-company
+supabase functions deploy resolve-self-registration-link
+supabase functions deploy submit-self-registration
+```
+
+Você valida no front-end com uma leitura depois do update.
+Isso evita “salvou com sucesso” sem persistir no banco.
+
+## rollback
+
+Você faz rollback pelo artefato do Vercel (Manager/app do aluno) e por migração reversível no Supabase.
+Você prefere migrations pequenas e incrementais.
+Você registra mudanças de schema junto com as mudanças de front-end que dependem delas.

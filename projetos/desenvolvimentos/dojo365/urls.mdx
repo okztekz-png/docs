@@ -3,8 +3,40 @@ title: "URLs"
 description: "URLs do Dojo365 por ambiente."
 ---
 
-| Ambiente | URL |
+Você usa URLs diferentes para o Manager, o app do aluno e o backend.
+
+## produção
+
+| Componente | URL |
 | --- | --- |
-| Produção | _-_ |
-| Staging | _-_ |
-| Dev | _-_ |
+| Manager (home) | `https://app.dojo365.com.br/src/app/app.html` |
+| Manager (auth) | `https://app.dojo365.com.br/src/app/auth/index.html` |
+| App do aluno | `https://aluno.dojo365.com.br` |
+| Auto-cadastro (join) | `https://app.dojo365.com.br/join/<slug>` |
+| Auto-cadastro (link) | `https://app.dojo365.com.br/link/<slug>` |
+| Supabase (API) | `https://goeizfxucfuyoncqrtey.supabase.co` |
+
+## staging
+
+Você replica as mesmas rotas em domínios de staging.
+Você mantém os mesmos caminhos.
+
+| Componente | URL |
+| --- | --- |
+| Manager | `https://<staging-domain>/src/app/app.html` |
+| Manager (auth) | `https://<staging-domain>/src/app/auth/index.html` |
+| App do aluno | `https://<staging-student-domain>` |
+| Auto-cadastro (join) | `https://<staging-domain>/join/<slug>` |
+| Auto-cadastro (link) | `https://<staging-domain>/link/<slug>` |
+| Supabase (API) | `https://<staging-supabase-project>.supabase.co` |
+
+## desenvolvimento local
+
+O Manager e o app do aluno podem rodar em servidores diferentes.
+Você usa:
+
+- Manager: `http://localhost:<porta>`
+- App do aluno: `http://localhost:8081`
+
+No código, o app do aluno local é o fallback padrão.
+Você encontra isso em `src/lib/app-url.js`.

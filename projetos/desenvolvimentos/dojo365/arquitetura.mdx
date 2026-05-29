@@ -3,4 +3,84 @@ title: "Arquitetura"
 description: "Arquitetura técnica do Dojo365."
 ---
 
-Diagrama de componentes, fluxo de dados e integrações.
+Esta página descreve os principais componentes do Dojo 365, como eles se comunicam e quais são os fluxos críticos (auth, auto-cadastro, turmas e graduação).
+
+## Visão de alto nível
+
+```mermaid
+flowchart LR
+  U[Usuário] -->|Navegador| M[Manager (Web)\nHTML/JS + Tailwind]
+  U -->|Navegador/App web| S[Student app\nExpo (React Native Web)]
+  M <--> SB[(Supabase)]
+  S <--> SB
+  M -->|Edge Functions| EF[Supabase Edge Functions]
+  S -->|Edge Functions| EF
+  SB -->|Auth| AUTH[Supabase Auth]
+  SB -->|DB| DB[(Postgres)]
+  SB -->|Storage| ST[(Storage)]
+```
+
+## Manager (painel do gestor)
+
+- Implementação: `src/app/` (HTML + JavaScript “vanilla”).
+- Estilo: Tailwind (build em `assets/css/tailwind.css`).
+- Rotas: hash router no arquivo `src/app/app.html` (ex.: `#/familia/<id>`, `#/turmas-<id>`, `#/empresa`).
+- Dependências principais:
+  - Supabase JS (Auth e PostgREST/RPC),
+  - bibliotecas pontuais (ex.: QRCode).
+
+### Fluxos importantes no Manager
+
+- **Famílias e responsáveis**: vincula dependentes à família e controla permissões dos responsáveis.
+- **Turmas**: lista/matrícula, presenças, e ações rápidas por aluno (graus, auditoria e “aulas manuais”).
+- **Configurações da empresa**: atualiza dados da academia (inclui WhatsApp de suporte).
+- **Auto-cadastro**: links públicos com inscrição guiada para aluno/responsável/dependente.
+
+## Student app (app do aluno/responsáveis)
+
+- Implementação: `src/modulo-aluno/app-simples/app-aluno/` (Expo Router).
+- UI: componentes React Native (renderiza no web via `react-native-web`).
+- Integração: Supabase Auth + APIs (PostgREST/RPC/Edge Functions).
+
+### Fluxos importantes no app do aluno
+
+- Login e recuperação de senha.
+- Perfil (visualização + edição, quando permitido).
+- Família (membros, responsáveis e cards de membros não-alunos).
+- Presenças e resumo por período (ex.: últimos 30 dias).
+- Canais de atendimento (ex.: WhatsApp configurado pela academia).
+
+## Supabase
+
+O Supabase é o “core backend” do Dojo 365:
+
+- **Auth**: login, invite/welcome e recovery (redefinição de senha).
+- **Postgres**: tabelas do domínio (alunos, turmas, presenças, faixas/graus, famílias).
+- **RPCs**: funções para snapshots e cálculos.
+- **Edge Functions**: endpoints controlados para ações que exigem validação server-side.
+
+### Edge Functions relevantes
+
+- `update-academy-company`: leitura/atualização de dados da academia (inclui `support_whatsapp`).
+- `resolve-self-registration-link`: resolve o link público de auto-cadastro.
+- `submit-self-registration`: submissão do auto-cadastro.
+- Outras (importação CSV, criação de staff, etc): ver `supabase/functions/`.
+
+## Rotas públicas (auto-cadastro)
+
+O deploy do Manager em Vercel usa rewrites (ver `vercel.json`):
+
+- `/join/:slug` → `src/app/auto-cadastro-publico.html`
+- `/link/:slug` → `src/app/auto-cadastro-publico.html`
+
+O fluxo do auto-cadastro geralmente segue:
+
+1. A página resolve o `slug` via Edge Function.
+2. Exibe o “modo” (aluno / responsável / ambos).
+3. Valida dados do formulário (ex.: idade mínima para responsável, CPF quando exigido).
+4. Envia a inscrição para o backend via Edge Function.
+
+## Observações de design
+
+- O sistema usa um modelo de dados onde alguns estados são **agregados** (ex.: `student_modality_progress.stripe_count`) e outros são **eventos** (ex.: `student_stripes` e `student_stripe_audit`).
+- Em fluxos de UI (ex.: turmas), alguns modais são reaproveitados entre views. Quando mover uma ação para outra página, garanta que o HTML do modal exista na view.
