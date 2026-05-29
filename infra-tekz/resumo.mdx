@@ -47,18 +47,13 @@ O firewall é responsável por:
 
 ## Redes e VLANs
 
-A rede interna da Tekz possui uma LAN principal e três VLANs documentadas.
+A documentação canônica de LAN, VLANs, gateways, DHCP e política de isolamento fica centralizada em:
 
-| Rede | Finalidade | Gateway | DHCP |
-| --- | --- | --- | --- |
-| LAN | Rede principal interna | `172.16.0.1` | `172.16.0.100` até `172.16.0.200` |
-| VLAN 100 | Bancada | 172.16.100.1 | `172.16.100.100` até `172.16.100.200` |
-| VLAN 11 | Rider | 172.16.11.1 | `172.16.11.100` até `172.16.11.105` |
-| VLAN 10 | Visitantes | 172.16.10.1 | `172.16.10.100` até `172.16.10.200` |
+- `infra-tekz/rede.mdx`
 
-<Note>
-  As VLANs possuem regras no firewall bloqueando a comunicação direta entre uma rede e outra.
-</Note>
+O papel do firewall (OPNsense) e as recomendações operacionais ficam em:
+
+- `infra-tekz/firewall.mdx`
 
 ## VPN
 
