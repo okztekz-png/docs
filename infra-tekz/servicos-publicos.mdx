@@ -23,27 +23,9 @@ A Tekz utiliza dois fluxos principais de publicação:
 
 A maior parte dos serviços públicos novos ou padronizados deve seguir este fluxo:
 
-```text
-Usuário externo
-    ↓
-Cloudflare DNS
-    ↓
-CNAME do serviço
-    ↓
-managerncst.tekz.com.br
-    ↓
-179.51.153.51
-    ↓
-OPNsense
-    ↓
-NAT 80/443
-    ↓
-VM services - 172.16.0.253
-    ↓
-Traefik
-    ↓
-Container correspondente
-```
+O fluxo completo (incluindo NAT `80/443`) fica centralizado em:
+
+- `infra-tekz/publicacao.mdx`
 
 ## Fluxo alternativo — Oracle Cloud / NPM
 

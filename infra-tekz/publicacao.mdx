@@ -1,0 +1,106 @@
+---
+title: "Publicação e NAT"
+description: "Padrão de publicação de serviços web (Cloudflare → OPNsense → NAT 80/443 → Traefik) e orientações para evitar NAT direto."
+icon: "share-nodes"
+---
+
+## Visão geral
+
+A publicação de serviços web da infraestrutura local da Tekz segue, em geral, um padrão único: **um NAT de entrada (`80/443`) no OPNsense aponta para o Traefik** na VM `services`. A partir daí, o Traefik publica múltiplos serviços por domínio.
+
+Esse padrão reduz a necessidade de manter NAT específico por aplicação.
+
+## Fluxo padrão (serviços Docker locais)
+
+```text
+Usuário externo
+    ↓
+Cloudflare (DNS)
+    ↓
+CNAME do serviço
+    ↓
+managerncst.tekz.com.br
+    ↓
+IP público local da Tekz: 179.51.153.51
+    ↓
+OPNsense (firewall)
+    ↓
+NAT 80/443
+    ↓
+VM services - 172.16.0.253
+    ↓
+Traefik
+    ↓
+Container/serviço correspondente
+```
+
+## Entrada pública principal
+
+| Item | Informação |
+| --- | --- |
+| Registro principal | `managerncst.tekz.com.br` |
+| IP público local | `179.51.153.51` |
+| Destino interno | `172.16.0.253` |
+| Serviço receptor | Traefik |
+| Portas | `80` e `443` |
+
+## NAT 80/443 (OPNsense)
+
+| Porta externa | Destino interno | Porta interna | Observação |
+| --- | --- | --- | --- |
+| `80` | `172.16.0.253` | `80` | Traefik HTTP |
+| `443` | `172.16.0.253` | `443` | Traefik HTTPS |
+
+<Note>
+  Para novos serviços públicos, priorize publicação via Traefik (domínio) em vez de NAT direto por porta.
+</Note>
+
+## Quando evitar NAT direto
+
+Evite NAT direto principalmente para:
+
+- painéis administrativos (ex.: Proxmox, OPNsense, UniFi);
+- serviços legados expostos por porta “solta” (sem domínio e sem proxy);
+- qualquer serviço sem autenticação forte ou sem restrição por VPN.
+
+Quando um serviço precisar ser público, a preferência é:
+
+1. Criar/ajustar DNS no Cloudflare.
+2. Publicar via Traefik (labels/rota).
+3. Manter apenas o NAT 80/443 como entrada.
+
+## Exceções (legados / transição)
+
+Ainda podem existir casos em que há NAT direto por portas específicas (legado, compatibilidade, ou transição). Sempre documente:
+
+- qual porta externa está exposta;
+- destino interno (IP/porta);
+- motivo do NAT direto (por que não está no Traefik);
+- plano de migração para Traefik, quando aplicável.
+
+## NAT direto (exceções conhecidas)
+
+Alguns serviços ainda aparecem publicados por NAT direto no OPNsense (fora do fluxo padrão via Traefik).
+
+| Serviço | Porta externa | Destino interno | Porta interna | Observação |
+| --- | --- | --- | --- | --- |
+| Proxmox | `8006` | `172.16.0.230` | `8006` | Acesso web administrativo |
+| UniFi HTTPS | `8443` | `172.16.0.250` | `8443` | UniFi Controller |
+| UniFi adoção | `8080` | `172.16.0.250` | `8080` | Adoção UniFi |
+| Nextcloud | `8086` | `172.16.0.118` | `443` | Publicação externa direta |
+| Elastic | `9200` | `172.16.0.152` | `9200` | Serviço legado |
+| n8n legado | `5678` | `172.16.0.152` | `5678` | Serviço antigo |
+| Chatwoot legado | `8085` | `172.16.0.152` | `3000` | (inativo) Chatwoot antigo |
+| Evolution API legado | `8081` | `172.16.0.152` | `8080` | (inativo) Evolution API antigo |
+| Gerador HelpTekz | `8899` | `172.16.0.231` | `8000` | (inativo) Gerador `.exe` agente HelpTekz |
+
+<Warning>
+  Revisar periodicamente quais NATs diretos ainda precisam permanecer expostos e priorizar migração para Traefik quando possível.
+</Warning>
+
+## Referências relacionadas
+
+- `infra-tekz/traefik.mdx`
+- `infra-tekz/cloudflare.mdx`
+- `infra-tekz/firewall.mdx`
+- `infra-tekz/dns-publico.mdx`

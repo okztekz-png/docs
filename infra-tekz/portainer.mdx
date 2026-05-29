@@ -86,25 +86,11 @@ painelncst.tekz.com.br
 
 Fluxo de acesso:
 
-```text
-Usuário autorizado
-    ↓
-Cloudflare
-    ↓
-painelncst.tekz.com.br
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local da Tekz - 179.51.153.51
-    ↓
-OPNsense
-    ↓
-NAT 80/443
-    ↓
-Traefik
-    ↓
-Portainer
-```
+O Portainer é publicado via Traefik usando o padrão de entrada (NAT `80/443` → Traefik).
+
+Detalhes do fluxo padrão e da regra de NAT ficam centralizados em:
+
+- `infra-tekz/publicacao.mdx`
 
 ## Dependências
 
@@ -120,87 +106,9 @@ Portainer
 
 ## Stacks administradas
 
-O Portainer administra diversas stacks da infraestrutura interna da Tekz.
+A lista de stacks (incluindo status e classificação operacional) fica centralizada em:
 
-| Stack | Ambiente | Função / Observação |
-| --- | --- | --- |
-| `chatwoot` | Swarm | Atendimento / produção |
-| `chatwoot_kanban` | Swarm | Addon para Chatwoot |
-| `dify-plugin-daemon` | Swarm | Componente do Dify |
-| `dify_api` | Swarm | API do Dify |
-| `dify_sandbox` | Swarm | Sandbox do Dify |
-| `dify_web` | Swarm | Interface web do Dify |
-| `dify_worker` | Swarm | Worker do Dify |
-| `docmost_tekz` | Swarm | Documentação antiga, prevista para remoção |
-| `evo-go-connector` | Swarm | Conector Evolution Go / Chatwoot |
-| `evogoInactive` | Swarm | Inativo / legado |
-| `evolution_v2Inactive` | Swarm | Inativo / legado |
-| `evolutiongo` | Swarm | Evolution Go em teste/uso |
-| `n8n_editor` | Swarm | Interface do n8n |
-| `n8n_mcp_api` | Swarm | API MCP do n8n |
-| `n8n_webhook` | Swarm | Webhooks do n8n |
-| `n8n_worker` | Swarm | Workers do n8n |
-| `noc-tv` | Compose | Dashboard customizado para TV |
-| `passbolt` | Swarm | Cofre de senhas privado |
-| `pgadmin` | Swarm | Administração PostgreSQL |
-| `pgvector` | Swarm | Banco vetorial / IA |
-| `portainer` | Swarm | Gerenciamento Docker |
-| `postgres` | Swarm | Banco PostgreSQL compartilhado |
-| `redis` | Swarm | Cache/fila |
-| `report-service` | Swarm | Serviço de relatórios |
-| `serplan_proxy_temp` | Swarm | Proxy temporário |
-| `tekz_proxy_temp` | Swarm | Proxy temporário |
-| `traefik` | Swarm | Proxy reverso |
-| `uptime_kumaInactive` | Swarm | Inativo; migrado para Oracle Cloud |
-
-## Categorias das stacks
-
-### Produção / uso ativo
-
-| Stack | Observação |
-| --- | --- |
-| `chatwoot` | Atendimento |
-| `chatwoot_kanban` | Addon para Chatwoot |
-| `evolutiongo` | Evolution Go em teste/uso |
-| `evo-go-connector` | Integração Evolution Go \+ Chatwoot |
-| `n8n_editor` | Interface de automação |
-| `n8n_webhook` | Webhooks de automação |
-| `n8n_worker` | Workers do n8n |
-| `n8n_mcp_api` | API MCP relacionada ao n8n |
-| `portainer` | Administração Docker |
-| `traefik` | Proxy reverso |
-| `postgres` | Banco compartilhado |
-| `redis` | Cache/fila |
-| `passbolt` | Cofre de senhas |
-| `report-service` | Relatórios |
-| `noc-tv` | Dashboard operacional |
-
-### Uso eventual / baixa frequência
-
-| Stack | Observação |
-| --- | --- |
-| `dify_web` | Interface Dify |
-| `dify_api` | API Dify |
-| `dify_worker` | Worker Dify |
-| `dify_sandbox` | Sandbox Dify |
-| `dify-plugin-daemon` | Plugins Dify |
-| `pgvector` | Banco vetorial / IA |
-| `pgadmin` | Administração PostgreSQL |
-
-### Legado / inativo / temporário
-
-| Stack | Observação |
-| --- | --- |
-| `docmost_tekz` | Será removido após migração para Mintlify |
-| `evogoInactive` | Inativo / legado |
-| `evolution_v2Inactive` | Inativo durante testes com Evolution Go |
-| `uptime_kumaInactive` | Migrado para Oracle Cloud |
-| `serplan_proxy_temp` | Proxy temporário |
-| `tekz_proxy_temp` | Proxy temporário |
-
-<Note>
-  As classificações acima devem ser revisadas conforme os serviços forem confirmados como ativos, inativos ou removidos.
-</Note>
+- `infra-tekz/stacks.mdx`
 
 ## Serviços mais críticos no Portainer
 

@@ -44,6 +44,7 @@
               "infra-tekz/stacks",
               "infra-tekz/traefik",
               "infra-tekz/cloudflare",
+              "infra-tekz/publicacao",
               "infra-tekz/oracle-cloud",
               "infra-tekz/dns-publico",
               "infra-tekz/servicos-publicos",

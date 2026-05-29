@@ -51,51 +51,9 @@ Ele é responsável por:
 
 ## Fluxo padrão de publicação
 
-```text
-Usuário externo
-    ↓
-Cloudflare
-    ↓
-CNAME do serviço
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local da Tekz: 179.51.153.51
-    ↓
-Firewall OPNsense
-    ↓
-NAT 80/443
-    ↓
-VM services - 172.16.0.253
-    ↓
-Traefik
-    ↓
-Container correspondente
-```
+O fluxo completo (Cloudflare → OPNsense → NAT `80/443` → Traefik) e os detalhes do NAT ficam centralizados em:
 
-## Entrada pública principal
-
-| Item | Informação |
-| --- | --- |
-| Registro principal | `managerncst.tekz.com.br` |
-| Tipo | A |
-| Aponta para | `179.51.153.51` |
-| Destino interno no firewall | `172.16.0.253` |
-| Serviço interno | Traefik |
-| Portas | `80` e `443` |
-
-## NAT no OPNsense
-
-O firewall OPNsense encaminha as portas públicas `80` e `443` para a VM `services`.
-
-| Porta externa | Destino interno | Porta interna | Serviço |
-| --- | --- | --- | --- |
-| `80` | `172.16.0.253` | `80` | Traefik HTTP |
-| `443` | `172.16.0.253` | `443` | Traefik HTTPS |
-
-<Note>
-  A partir desse NAT único, o Traefik consegue publicar vários serviços diferentes usando domínios separados.
-</Note>
+- `infra-tekz/publicacao.mdx`
 
 ## Estratégia com Cloudflare
 
@@ -151,17 +109,10 @@ Isso permite publicar novos serviços sem criar um novo registro A para cada dom
 
 Alguns serviços ainda utilizam NAT direto ou Nginx Proxy Manager na Oracle Cloud, em vez do fluxo padrão Cloudflare → Traefik.
 
-| Serviço | Publicação | Observação |
-| --- | --- | --- |
-| Proxmox | NAT direto `8006` → `172.16.0.230:8006` | Acesso administrativo sensível |
-| Elastic | NAT direto `9200` → `172.16.0.152:9200` | Serviço legado |
-| Nextcloud | NAT direto `8086` → `172.16.0.118:443` | Publicação externa direta |
-| UniFi | NAT direto `8443/8080` → `172.16.0.250` | Controller e adoção |
-| n8n legado | NAT direto `5678` → `172.16.0.152:5678` | Serviço antigo |
-| Chatwoot legado | NAT direto `8085` → `172.16.0.152:3000` | Serviço antigo |
-| Evolution API legado | NAT direto `8081` → `172.16.0.152:8080` | Serviço antigo |
-| Gerador agente HelpTekz | NPM Oracle → `179.51.153.51:8899` | Geração de `.exe` |
-| Uptime Kuma | Oracle Cloud | Migrado para ambiente externo |
+Para a lista de exceções (NAT direto) e revisão de exposição, use:
+
+- `infra-tekz/publicacao.mdx`
+- `infra-tekz/oracle-cloud.mdx`
 
 <Warning>
   Serviços fora do Traefik devem ser revisados periodicamente, principalmente quando expõem painéis administrativos ou serviços legados.

@@ -99,36 +99,17 @@ Além dos serviços que passam pelo Traefik local, existem registros que apontam
 
 O Cloudflare resolve o domínio, mas quem decide para qual container enviar o tráfego é o **Traefik**.
 
-Fluxo:
+O fluxo padrão (Cloudflare → NAT `80/443` → Traefik → container) está detalhado em:
 
-```text
-servico.tekz.com.br
-    ↓
-Cloudflare DNS
-    ↓
-managerncst.tekz.com.br
-    ↓
-179.51.153.51
-    ↓
-OPNsense
-    ↓
-NAT 80/443
-    ↓
-Traefik
-    ↓
-Container
-```
+- `infra-tekz/publicacao.mdx`
 
 ## Relação com OPNsense
 
 O Cloudflare aponta para o IP público local `179.51.153.51`.
 
-No firewall OPNsense, existem NATs principais:
+O NAT principal de entrada (`80/443`) no OPNsense fica documentado em:
 
-| Porta externa | Destino interno | Porta interna | Serviço |
-| --- | --- | --- | --- |
-| `80` | `172.16.0.253` | `80` | Traefik HTTP |
-| `443` | `172.16.0.253` | `443` | Traefik HTTPS |
+- `infra-tekz/publicacao.mdx`
 
 Se esses NATs forem alterados ou removidos, os serviços publicados via `managerncst.tekz.com.br` deixarão de funcionar externamente.
 

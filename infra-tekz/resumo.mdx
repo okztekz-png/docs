@@ -184,21 +184,9 @@ Nesta VM rodam:
 
 A publicação web dos serviços internos normalmente segue este fluxo:
 
-```text
-Cloudflare
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local da Tekz: 179.51.153.51
-    ↓
-Firewall OPNsense
-    ↓
-NAT 80/443
-    ↓
-Traefik na VM Services
-    ↓
-Container / serviço Docker
-```
+O fluxo padrão (NAT `80/443` → Traefik) está detalhado em:
+
+- `infra-tekz/publicacao.mdx`
 
 O registro principal usado para entrada dos serviços locais é:
 

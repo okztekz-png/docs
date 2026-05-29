@@ -79,48 +79,11 @@ Ela atua como base para:
 
 ## Fluxo de publicação web
 
-A publicação dos serviços que rodam na VM `services` geralmente segue este fluxo:
+A publicação web (Cloudflare → OPNsense → NAT `80/443` → Traefik) é padrão na infraestrutura local.
 
-```text
-Cloudflare
-    ↓
-CNAME do serviço
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local da Tekz: 179.51.153.51
-    ↓
-Firewall OPNsense
-    ↓
-NAT 80/443
-    ↓
-VM services - 172.16.0.253
-    ↓
-Traefik
-    ↓
-Container correspondente
-```
+Para evitar duplicação, o fluxo completo, a tabela do NAT `80/443` e as orientações sobre NAT direto ficam centralizados em:
 
-## Entrada pública principal
-
-| Item | Informação |
-| --- | --- |
-| Registro principal | `managerncst.tekz.com.br` |
-| IP público local | `179.51.153.51` |
-| Destino interno | `172.16.0.253` |
-| Serviço receptor | Traefik |
-| Portas | `80` e `443` |
-
-## NATs principais
-
-| Porta externa | Destino interno | Porta interna | Serviço |
-| --- | --- | --- | --- |
-| `80` | `172.16.0.253` | `80` | Traefik HTTP |
-| `443` | `172.16.0.253` | `443` | Traefik HTTPS |
-
-<Note>
-  Novos serviços públicos normalmente devem ser publicados via Traefik, evitando NAT direto para portas específicas sempre que possível.
-</Note>
+- `infra-tekz/publicacao.mdx`
 
 ## Portainer
 
@@ -173,38 +136,9 @@ O Passbolt é usado como cofre de senhas da Tekz.
 
 ## Stacks conhecidas
 
-Abaixo estão as principais stacks documentadas no Portainer.
+A lista completa e o status das stacks ficam centralizados em:
 
-| Stack | Ambiente | Status / Observação |
-| --- | --- | --- |
-| `chatwoot` | Swarm | Atendimento / produção |
-| `chatwoot_kanban` | Swarm | Addon para Chatwoot |
-| `dify-plugin-daemon` | Swarm | Componente do Dify |
-| `dify_api` | Swarm | API do Dify |
-| `dify_sandbox` | Swarm | Sandbox do Dify |
-| `dify_web` | Swarm | Interface web do Dify |
-| `dify_worker` | Swarm | Worker do Dify |
-| `docmost_tekz` | Swarm | Documentação antiga, prevista para remoção |
-| `evo-go-connector` | Swarm | Conector Evolution Go / Chatwoot |
-| `evogoInactive` | Swarm | Inativo / legado |
-| `evolution_v2Inactive` | Swarm | Inativo / legado |
-| `evolutiongo` | Swarm | Evolution Go em teste/uso |
-| `n8n_editor` | Swarm | Interface do n8n |
-| `n8n_mcp_api` | Swarm | API MCP do n8n |
-| `n8n_webhook` | Swarm | Webhooks do n8n |
-| `n8n_worker` | Swarm | Workers do n8n |
-| `noc-tv` | Compose | Dashboard customizado para TV |
-| `passbolt` | Swarm | Cofre de senhas privado |
-| `pgadmin` | Swarm | Administração PostgreSQL |
-| `pgvector` | Swarm | Banco vetorial / IA |
-| `portainer` | Swarm | Gerenciamento Docker |
-| `postgres` | Swarm | Banco PostgreSQL compartilhado |
-| `redis` | Swarm | Cache/fila |
-| `report-service` | Swarm | Serviço de relatórios |
-| `serplan_proxy_temp` | Swarm | Proxy temporário |
-| `tekz_proxy_temp` | Swarm | Proxy temporário |
-| `traefik` | Swarm | Proxy reverso |
-| `uptime_kumaInactive` | Swarm | Inativo; migrado para Oracle Cloud |
+- `infra-tekz/stacks.mdx`
 
 ## Serviços principais
 

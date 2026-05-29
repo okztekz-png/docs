@@ -483,17 +483,11 @@ A stack `traefik` é o proxy reverso principal da VM `services`.
 
 ## Fluxo
 
-```text
-Cloudflare
-    ↓
-managerncst.tekz.com.br
-    ↓
-OPNsense NAT 80/443
-    ↓
-Traefik
-    ↓
-Container correspondente
-```
+A publicação via Traefik usa o fluxo padrão (NAT `80/443` no OPNsense → Traefik).
+
+Detalhes do fluxo e do NAT ficam centralizados em:
+
+- `infra-tekz/publicacao.mdx`
 
 <Warning>
   Se o Traefik cair, os serviços publicados via domínio podem ficar inacessíveis.

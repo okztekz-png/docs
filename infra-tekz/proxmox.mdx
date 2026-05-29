@@ -177,25 +177,11 @@ Na VM `services` rodam:
 
 ## Fluxo de publicação dos serviços Docker
 
-```text
-Internet
-    ↓
-Cloudflare
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local 179.51.153.51
-    ↓
-OPNsense
-    ↓
-NAT 80/443
-    ↓
-VM services - 172.16.0.253
-    ↓
-Traefik
-    ↓
-Container Docker
-```
+A publicação web dos serviços Docker locais segue o padrão (NAT `80/443` → Traefik).
+
+O fluxo completo e a regra de NAT ficam centralizados em:
+
+- `infra-tekz/publicacao.mdx`
 
 ## Diagrama Mermaid
 

@@ -35,95 +35,11 @@ Ele é o ponto central da rede interna e é responsável por:
 
 ## Redes gerenciadas pelo firewall
 
-O OPNsense gerencia a LAN principal e as VLANs internas da Tekz.
+O OPNsense gerencia a LAN principal e as VLANs internas (ex.: VLAN `10`, `11`, `100`), aplicando isolamento entre redes.
 
-| Rede | VLAN | Finalidade | DHCP |
-| --- | --- | --- | --- |
-| LAN | Sem VLAN / LAN principal | Rede principal interna | `172.16.0.100` até `172.16.0.200` |
-| Bancada | VLAN 100 | Rede de bancada / testes | `172.16.100.100` até `172.16.100.200` |
-| Rider | VLAN 11 | Rede Rider | `172.16.11.100` até `172.16.11.105` |
-| Visitantes | VLAN 10 | Rede de visitantes | `172.16.10.100` até `172.16.10.200` |
+Para evitar duplicação, os detalhes de VLANs, faixas DHCP, gateways e política esperada entre redes ficam centralizados em:
 
-## LAN principal
-
-| Item | Informação |
-| --- | --- |
-| Rede | `172.16.0.0/24` |
-| Gateway | `172.16.0.1` |
-| DHCP | Ativo |
-| Faixa DHCP | `172.16.0.100` até `172.16.0.200` |
-
-A LAN principal concentra os servidores e serviços internos mais importantes da Tekz.
-
-## Principais hosts na LAN
-
-| Host / Serviço | IP | Função |
-| --- | --- | --- |
-| OPNsense | `172.16.0.1` | Firewall e gateway |
-| Proxmox | `172.16.0.230` | Host de virtualização |
-| Automation | `172.16.0.152` | Serviços legados, automações e Elastic |
-| Nextcloud | `172.16.0.118` | VM Ubuntu com Nextcloud |
-| UniFi Auto | `172.16.0.250` | Controlador UniFi central |
-| Services | `172.16.0.253` | Docker, Portainer, Traefik e serviços |
-| Univention Server | `172.16.0.254` | UCS, arquivos locais e AD |
-
-## VLAN 100 — Bancada
-
-| Item | Informação |
-| --- | --- |
-| VLAN | `100` |
-| Rede | `172.16.100.0/24` |
-| Finalidade | Bancada técnica, testes e equipamentos em manutenção |
-| DHCP | `172.16.100.100` até `172.16.100.200` |
-| Gateway | 172.16.100.1 |
-
-## VLAN 11 — Rider
-
-| Item | Informação |
-| --- | --- |
-| VLAN | `11` |
-| Rede | `172.16.11.0/24` |
-| Finalidade | Rede Rider |
-| DHCP | `172.16.11.100` até `172.16.11.105` |
-| Gateway | 172.16.11.1 |
-
-## VLAN 10 — Visitantes
-
-| Item | Informação |
-| --- | --- |
-| VLAN | `10` |
-| Rede | `172.16.10.0/24` |
-| Finalidade | Rede de visitantes |
-| DHCP | `172.16.10.100` até `172.16.10.200` |
-| Gateway | 172.16.10.1 |
-
-## Isolamento entre VLANs
-
-Todas as VLANs possuem regras no firewall bloqueando a comunicação direta entre uma rede e outra.
-
-Essa política reduz o risco de:
-
-- visitantes acessarem a rede interna;
-- equipamentos de bancada alcançarem servidores sem necessidade;
-- redes específicas acessarem serviços administrativos;
-- movimentação lateral entre redes em caso de incidente.
-
-## Política esperada entre redes
-
-| Origem | Destino | Status esperado |
-| --- | --- | --- |
-| LAN principal | Internet | Permitido |
-| VLAN 100 / Bancada | Internet | Permitido conforme regra |
-| VLAN 11 / Rider | Internet | Permitido conforme regra |
-| VLAN 10 / Visitantes | Internet | Permitido conforme regra |
-| VLAN 10 / Visitantes | LAN principal | Bloqueado |
-| VLAN 100 / Bancada | LAN principal | Bloqueado ou restrito |
-| VLAN 11 / Rider | LAN principal | Bloqueado ou restrito |
-| VLANs entre si | Outras VLANs | Bloqueado |
-
-<Warning>
-  Qualquer liberação entre VLANs deve ser feita com regra específica, informando origem, destino, porta, protocolo e justificativa.
-</Warning>
+- `infra-tekz/rede.mdx`
 
 ## OpenVPN
 
@@ -154,35 +70,13 @@ A VPN deve ser utilizada para acessar serviços privados da infraestrutura inter
 
 A publicação principal dos serviços internos ocorre através de NAT no OPNsense, encaminhando as portas `80` e `443` para a VM `services`, onde o Traefik faz o roteamento por domínio.
 
-Fluxo padrão:
+O fluxo padrão e a regra de NAT `80/443` ficam centralizados em:
 
-```text
-Internet
-    ↓
-Cloudflare
-    ↓
-IP público local da Tekz
-    ↓
-OPNsense
-    ↓
-NAT 80/443
-    ↓
-VM services - 172.16.0.253
-    ↓
-Traefik
-    ↓
-Container / serviço correspondente
-```
+- `infra-tekz/publicacao.mdx`
 
-## Entrada pública principal
+A entrada pública principal e o NAT `80/443` ficam detalhados em:
 
-| Item | Informação |
-| --- | --- |
-| IP público local | `179.51.153.51` |
-| Registro principal | `managerncst.tekz.com.br` |
-| Destino interno padrão | `172.16.0.253` |
-| Serviço interno | Traefik |
-| Portas principais | `80` e `443` |
+- `infra-tekz/publicacao.mdx`
 
 ## Regras administrativas locais
 

@@ -74,6 +74,10 @@ Além disso, alguns serviços auxiliares rodam em ambiente externo na **Oracle C
     DNS público, CNAMEs, registros A e estratégia de publicação dos serviços.
   </Card>
 
+  <Card title="Publicação e NAT" icon="share-nodes" href="/infra-tekz/publicacao">
+    Fluxo padrão (NAT 80/443 → Traefik) e orientação para evitar NAT direto.
+  </Card>
+
   <Card title="Oracle Cloud" icon="cloud-cog" href="/infra-tekz/oracle-cloud">
     Serviços externos hospedados na Oracle Cloud, como Nginx Proxy Manager e Uptime Kuma.
   </Card>
@@ -125,21 +129,9 @@ Além disso, alguns serviços auxiliares rodam em ambiente externo na **Oracle C
 
 A publicação dos serviços internos segue, em geral, este fluxo:
 
-```text
-Cloudflare
-    ↓
-managerncst.tekz.com.br
-    ↓
-IP público local da Tekz
-    ↓
-Firewall OPNsense
-    ↓
-NAT 80/443
-    ↓
-Traefik na VM Services
-    ↓
-Serviço Docker correspondente
-```
+O fluxo padrão (NAT `80/443` → Traefik) está detalhado em:
+
+- `infra-tekz/publicacao.mdx`
 
 Para novos serviços publicados via Traefik, normalmente é criado um CNAME no Cloudflare apontando para:
 
